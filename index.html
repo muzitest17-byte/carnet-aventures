@@ -1,0 +1,1213 @@
+<title>Carnet d'Aventures — Maths, Français & Lecture</title>
+<style>
+  :root{
+    --bg:#1c3b2e;
+    --bg-deep:#122720;
+    --bg-glow:#2a5641;
+    --panel:#204434;
+    --panel-2:#244a39;
+    --line: rgba(245,241,230,0.16);
+    --chalk:#f5f1e6;
+    --chalk-dim: rgba(245,241,230,0.64);
+    --accent-math:#ffc857;
+    --accent-fr:#ff9d6c;
+    --accent-lecture:#6ec6ff;
+    --accent-tables:#c9a4ff;
+    --good:#7ed957;
+    --good-ink:#0e2a12;
+    --bad:#ff5252;
+    --radius-lg:22px;
+    --radius-md:15px;
+    --shadow: 0 14px 34px rgba(6,16,12,0.4);
+    --font: ui-rounded, "SF Pro Rounded", "Segoe UI Rounded", "Segoe UI", system-ui, -apple-system, sans-serif;
+  }
+  *,*::before,*::after{ box-sizing:border-box; }
+  html,body{ height:100%; }
+  body{
+    margin:0;
+    min-height:100vh;
+    background:
+      radial-gradient(ellipse 900px 500px at 50% -8%, var(--bg-glow) 0%, transparent 60%),
+      linear-gradient(180deg, var(--bg) 0%, var(--bg-deep) 100%);
+    color:var(--chalk);
+    font-family:var(--font);
+    font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:"";
+    position:fixed; inset:0; pointer-events:none; z-index:0;
+    background-image: repeating-linear-gradient(115deg, rgba(255,255,255,0.035) 0 2px, transparent 2px 140px);
+    mix-blend-mode:overlay;
+  }
+  .app-shell{ position:relative; z-index:1; min-height:100vh; display:flex; flex-direction:column; }
+  h1,h2,h3{ text-wrap:balance; margin:0; }
+  button{ font-family:inherit; }
+  .visually-hidden{ position:absolute; width:1px;height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 18px clamp(16px,4vw,32px) 6px;
+    gap:12px;
+  }
+  .btn-back{
+    display:flex; align-items:center; gap:6px;
+    background:var(--panel); color:var(--chalk);
+    border:2px solid var(--line); border-radius:999px;
+    padding:9px 16px 9px 12px; font-weight:700; font-size:15px;
+    cursor:pointer; box-shadow:var(--shadow);
+  }
+  .btn-back:hover{ background:var(--panel-2); }
+  .spacer{ flex:1; }
+  .stars-counter{
+    display:flex; align-items:center; gap:7px;
+    background:var(--panel); border:2px solid var(--line); border-radius:999px;
+    padding:8px 16px; font-weight:800; font-size:16px; box-shadow:var(--shadow);
+    color:var(--accent-math);
+  }
+  .stars-counter svg{ width:20px; height:20px; }
+
+  .stage{
+    flex:1; display:flex; flex-direction:column; align-items:center;
+    padding: clamp(14px,3vw,28px) clamp(16px,4vw,32px) 48px;
+  }
+  .wrap{ width:100%; max-width:680px; margin:0 auto; }
+
+  .hero{ text-align:center; margin: 10px auto 28px; max-width:520px; }
+  .hero-title{
+    font-size:clamp(30px,6vw,44px); font-weight:800; letter-spacing:0.2px;
+    line-height:1.08;
+  }
+  .hero-title .doodle{ display:block; font-size:0.4em; font-weight:700; color:var(--chalk-dim); letter-spacing:2px; text-transform:uppercase; margin-bottom:10px; }
+  .hero-sub{ margin-top:12px; color:var(--chalk-dim); font-size:17px; }
+
+  .portal-grid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+    gap:18px; width:100%;
+  }
+  .portal{
+    background:var(--panel); border:2px dashed var(--line); border-radius:var(--radius-lg);
+    padding:26px 22px; text-align:left; cursor:pointer; box-shadow:var(--shadow);
+    display:flex; flex-direction:column; gap:12px; border-top:6px solid var(--accent);
+    transition: transform .16s ease, box-shadow .16s ease;
+    color:var(--chalk);
+  }
+  .portal:nth-of-type(1){ transform:rotate(-1.1deg); }
+  .portal:nth-of-type(2){ transform:rotate(0.8deg); }
+  .portal:nth-of-type(3){ transform:rotate(-0.5deg); }
+  .portal:nth-of-type(4){ transform:rotate(0.6deg); }
+  .portal:hover, .portal:focus-visible{ transform:translateY(-5px) rotate(0deg); box-shadow:0 20px 40px rgba(6,16,12,0.5); }
+  .portal .icon{ width:44px; height:44px; color:var(--accent); }
+  .portal h2{ font-size:22px; font-weight:800; }
+  .portal p{ color:var(--chalk-dim); font-size:15px; margin:0; line-height:1.4; }
+
+  .choice-grid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:14px; width:100%;
+  }
+  .card{
+    background:var(--panel); border:2px solid var(--line); border-radius:var(--radius-lg);
+    box-shadow:var(--shadow); padding:clamp(20px,4vw,34px); width:100%;
+  }
+  .pick-btn{
+    background:var(--panel-2); border:2px solid var(--line); border-radius:var(--radius-md);
+    color:var(--chalk); padding:18px 16px; font-size:18px; font-weight:700;
+    cursor:pointer; text-align:center; min-height:64px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
+  }
+  .pick-btn small{ font-weight:600; color:var(--chalk-dim); font-size:13px; }
+  .pick-btn:hover, .pick-btn:focus-visible{ border-color:var(--accent, var(--chalk)); }
+  .pick-btn[disabled]{ opacity:.35; cursor:not-allowed; }
+  .pick-btn .big{ font-size:28px; }
+
+  .section-title{ display:flex; align-items:center; gap:10px; margin-bottom:18px; }
+  .section-title .icon{ width:30px; height:30px; }
+  .section-title h2{ font-size:22px; font-weight:800; }
+
+  .progress-row{ display:flex; align-items:center; gap:14px; width:100%; margin-bottom:16px; }
+  .progress-track{ flex:1; height:11px; border-radius:6px; background:rgba(255,255,255,0.12); overflow:hidden; }
+  .progress-fill{ height:100%; border-radius:6px; background:linear-gradient(90deg, var(--accent), var(--chalk)); transition:width .35s ease; }
+  .progress-count{ font-weight:800; font-size:15px; color:var(--chalk-dim); white-space:nowrap; }
+
+  .question-text{ font-size:clamp(26px,5vw,34px); font-weight:800; text-align:center; margin:6px 0 22px; letter-spacing:0.5px; }
+  .question-meta{ text-align:center; color:var(--chalk-dim); font-size:15px; margin-bottom:8px; }
+  .question-meta strong{ color:var(--accent); }
+
+  .objets-row{ display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:10px; font-size:30px; margin-bottom:8px; }
+  .objets-group{ display:inline-flex; flex-wrap:wrap; gap:3px; max-width:280px; justify-content:center; }
+  .objets-op{ font-size:26px; font-weight:800; color:var(--accent); }
+  .crossed{ opacity:.3; text-decoration:line-through; filter:grayscale(.6); }
+  .objets-question{ text-align:center; color:var(--chalk-dim); font-size:16px; margin:6px 0 18px; }
+
+  .answer-row{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom:8px; }
+  .answer-input{
+    font-size:26px; font-weight:800; text-align:center; width:150px; max-width:60vw;
+    background:var(--panel-2); border:2px solid var(--line); border-radius:var(--radius-md);
+    color:var(--chalk); padding:12px 10px; font-family:inherit;
+  }
+  .answer-input:focus{ outline:2px solid var(--accent); border-color:var(--accent); }
+  .btn-validate{
+    background:var(--accent); color:#152018; border:none; border-radius:var(--radius-md);
+    font-weight:800; font-size:18px; padding:12px 26px; cursor:pointer;
+  }
+  .btn-validate[disabled]{ opacity:.4; cursor:not-allowed; }
+
+  .choice-answers{ display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:14px; margin-bottom:8px; }
+  .choice-btn{
+    background:var(--panel-2); border:2px solid var(--line); border-radius:var(--radius-md);
+    color:var(--chalk); padding:16px 14px; font-size:20px; font-weight:800; cursor:pointer; min-height:60px;
+  }
+  .choice-btn.is-correct{ background:var(--good); color:var(--good-ink); border-color:transparent; }
+  .choice-btn.is-wrong{ background:var(--bad); color:#fff; border-color:transparent; }
+  .choice-btn.is-dim{ opacity:.4; }
+  .choice-btn[disabled]{ cursor:default; }
+
+  .verb-choice{ text-align:left; font-size:19px; }
+
+  .speak-btn{
+    display:inline-flex; align-items:center; gap:8px; margin:0 auto 18px; background:var(--panel-2);
+    border:2px solid var(--line); border-radius:999px; color:var(--chalk); padding:12px 22px;
+    font-weight:700; font-size:16px; cursor:pointer;
+  }
+  .speak-btn svg{ width:20px; height:20px; }
+  .speak-btn:hover{ border-color:var(--accent); }
+
+  .verb-tense-heading{ font-size:15px; font-weight:800; color:var(--accent); text-transform:uppercase; letter-spacing:0.6px; margin:18px 0 2px; }
+  .verb-tense-block:first-of-type .verb-tense-heading{ margin-top:4px; }
+  .table-list{ display:flex; flex-direction:column; margin-bottom:18px; border-top:1px solid var(--line); }
+  .table-line{ display:flex; align-items:center; justify-content:space-between; padding:11px 6px; border-bottom:1px solid var(--line); font-size:19px; font-weight:700; }
+  .line-speak{ background:transparent; border:none; color:var(--chalk-dim); cursor:pointer; padding:6px; display:flex; }
+  .line-speak svg{ width:18px; height:18px; }
+  .line-speak:hover{ color:var(--accent); }
+
+  .feedback{
+    margin-top:14px; padding:14px 18px; border-radius:var(--radius-md); text-align:center;
+    font-weight:700; font-size:17px;
+  }
+  .feedback.good{ background:rgba(126,217,87,0.16); color:var(--good); }
+  .feedback.bad{ background:rgba(255,82,82,0.14); color:var(--bad); }
+  .feedback small{ display:block; font-weight:600; color:var(--chalk-dim); margin-top:4px; }
+
+  .actions-row{ display:flex; gap:12px; justify-content:center; margin-top:20px; flex-wrap:wrap; }
+  .btn-primary{
+    background:var(--accent); color:#152018; border:none; border-radius:999px;
+    font-weight:800; font-size:17px; padding:13px 28px; cursor:pointer; box-shadow:var(--shadow);
+  }
+  .btn-secondary{
+    background:transparent; color:var(--chalk); border:2px solid var(--line); border-radius:999px;
+    font-weight:700; font-size:16px; padding:11px 24px; cursor:pointer;
+  }
+  .btn-secondary:hover{ border-color:var(--chalk); }
+
+  .result-card{ text-align:center; }
+  .result-emoji{ font-size:56px; margin-bottom:6px; }
+  .result-score{ font-size:44px; font-weight:800; margin:6px 0; }
+  .result-msg{ font-size:18px; color:var(--chalk-dim); margin-bottom:6px; }
+  .result-stars{ font-size:30px; letter-spacing:6px; margin:10px 0 4px; }
+
+  :focus-visible{ outline:3px solid var(--accent-lecture); outline-offset:2px; }
+
+  @media (prefers-reduced-motion: no-preference){
+    .card{ animation: rise .32s ease both; }
+    @keyframes rise{ from{ opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+    .choice-btn.is-correct, .pick-btn.is-correct{ animation: pop .28s ease; }
+    @keyframes pop{ 0%{transform:scale(1);} 45%{transform:scale(1.06);} 100%{transform:scale(1);} }
+  }
+
+  footer.credits{ text-align:center; color:var(--chalk-dim); font-size:13px; padding:18px; opacity:.7; }
+</style>
+
+<div class="app-shell" id="app"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- data ---------- */
+  var LEVEL_INFO = {
+    CP:{label:'CP', desc:'6-7 ans', ops:['add','sub']},
+    CE1:{label:'CE1', desc:'7-8 ans', ops:['add','sub','mul']},
+    CE2:{label:'CE2', desc:'8-9 ans', ops:['add','sub','mul']},
+    CM1:{label:'CM1', desc:'9-10 ans', ops:['add','sub','mul']},
+    CM2:{label:'CM2', desc:'10-11 ans', ops:['add','sub','mul']}
+  };
+  var LEVEL_ORDER = ['CP','CE1','CE2','CM1','CM2'];
+  var OP_INFO = {
+    add:{symbol:'+', label:'Addition'},
+    sub:{symbol:'−', label:'Soustraction'},
+    mul:{symbol:'×', label:'Multiplication'}
+  };
+  var MODE_INFO = {
+    direct:{label:'Calcul simple', desc:'Trouve le résultat', icon:'✏️'},
+    trou:{label:'Nombre mystère', desc:'Trouve le nombre caché', icon:'❓'},
+    qcm:{label:'QCM', desc:'Choisis la bonne réponse', icon:'☑️'},
+    objets:{label:'Avec des dessins', desc:'Compte les objets', icon:'🍎'}
+  };
+
+  var IRREGULAR_VERBS = {
+    'être': {
+      present:{je:'suis',tu:'es',il:'est',nous:'sommes',vous:'êtes',ils:'sont'},
+      passe:{je:'ai été',tu:'as été',il:'a été',nous:'avons été',vous:'avez été',ils:'ont été'},
+      futur:{je:'serai',tu:'seras',il:'sera',nous:'serons',vous:'serez',ils:'seront'},
+      passeSimple:{je:'fus',tu:'fus',il:'fut',nous:'fûmes',vous:'fûtes',ils:'furent'}
+    },
+    'avoir': {
+      present:{je:'ai',tu:'as',il:'a',nous:'avons',vous:'avez',ils:'ont'},
+      passe:{je:'ai eu',tu:'as eu',il:'a eu',nous:'avons eu',vous:'avez eu',ils:'ont eu'},
+      futur:{je:'aurai',tu:'auras',il:'aura',nous:'aurons',vous:'aurez',ils:'auront'},
+      passeSimple:{je:'eus',tu:'eus',il:'eut',nous:'eûmes',vous:'eûtes',ils:'eurent'}
+    },
+    'faire': {
+      present:{je:'fais',tu:'fais',il:'fait',nous:'faisons',vous:'faites',ils:'font'},
+      passe:{je:'ai fait',tu:'as fait',il:'a fait',nous:'avons fait',vous:'avez fait',ils:'ont fait'},
+      futur:{je:'ferai',tu:'feras',il:'fera',nous:'ferons',vous:'ferez',ils:'feront'},
+      passeSimple:{je:'fis',tu:'fis',il:'fit',nous:'fîmes',vous:'fîtes',ils:'firent'}
+    },
+    'prendre': {
+      present:{je:'prends',tu:'prends',il:'prend',nous:'prenons',vous:'prenez',ils:'prennent'},
+      passe:{je:'ai pris',tu:'as pris',il:'a pris',nous:'avons pris',vous:'avez pris',ils:'ont pris'},
+      futur:{je:'prendrai',tu:'prendras',il:'prendra',nous:'prendrons',vous:'prendrez',ils:'prendront'},
+      passeSimple:{je:'pris',tu:'pris',il:'prit',nous:'prîmes',vous:'prîtes',ils:'prirent'}
+    },
+    'voir': {
+      present:{je:'vois',tu:'vois',il:'voit',nous:'voyons',vous:'voyez',ils:'voient'},
+      passe:{je:'ai vu',tu:'as vu',il:'a vu',nous:'avons vu',vous:'avez vu',ils:'ont vu'},
+      futur:{je:'verrai',tu:'verras',il:'verra',nous:'verrons',vous:'verrez',ils:'verront'},
+      passeSimple:{je:'vis',tu:'vis',il:'vit',nous:'vîmes',vous:'vîtes',ils:'virent'}
+    },
+    'pouvoir': {
+      present:{je:'peux',tu:'peux',il:'peut',nous:'pouvons',vous:'pouvez',ils:'peuvent'},
+      passe:{je:'ai pu',tu:'as pu',il:'a pu',nous:'avons pu',vous:'avez pu',ils:'ont pu'},
+      futur:{je:'pourrai',tu:'pourras',il:'pourra',nous:'pourrons',vous:'pourrez',ils:'pourront'},
+      passeSimple:{je:'pus',tu:'pus',il:'put',nous:'pûmes',vous:'pûtes',ils:'purent'}
+    },
+    'vouloir': {
+      present:{je:'veux',tu:'veux',il:'veut',nous:'voulons',vous:'voulez',ils:'veulent'},
+      passe:{je:'ai voulu',tu:'as voulu',il:'a voulu',nous:'avons voulu',vous:'avez voulu',ils:'ont voulu'},
+      futur:{je:'voudrai',tu:'voudras',il:'voudra',nous:'voudrons',vous:'voudrez',ils:'voudront'},
+      passeSimple:{je:'voulus',tu:'voulus',il:'voulut',nous:'voulûmes',vous:'voulûtes',ils:'voulurent'}
+    },
+    'dire': {
+      present:{je:'dis',tu:'dis',il:'dit',nous:'disons',vous:'dites',ils:'disent'},
+      passe:{je:'ai dit',tu:'as dit',il:'a dit',nous:'avons dit',vous:'avez dit',ils:'ont dit'},
+      futur:{je:'dirai',tu:'diras',il:'dira',nous:'dirons',vous:'direz',ils:'diront'},
+      passeSimple:{je:'dis',tu:'dis',il:'dit',nous:'dîmes',vous:'dîtes',ils:'dirent'}
+    },
+    'mettre': {
+      present:{je:'mets',tu:'mets',il:'met',nous:'mettons',vous:'mettez',ils:'mettent'},
+      passe:{je:'ai mis',tu:'as mis',il:'a mis',nous:'avons mis',vous:'avez mis',ils:'ont mis'},
+      futur:{je:'mettrai',tu:'mettras',il:'mettra',nous:'mettrons',vous:'mettrez',ils:'mettront'},
+      passeSimple:{je:'mis',tu:'mis',il:'mit',nous:'mîmes',vous:'mîtes',ils:'mirent'}
+    },
+    'boire': {
+      present:{je:'bois',tu:'bois',il:'boit',nous:'buvons',vous:'buvez',ils:'boivent'},
+      passe:{je:'ai bu',tu:'as bu',il:'a bu',nous:'avons bu',vous:'avez bu',ils:'ont bu'},
+      futur:{je:'boirai',tu:'boiras',il:'boira',nous:'boirons',vous:'boirez',ils:'boiront'},
+      passeSimple:{je:'bus',tu:'bus',il:'but',nous:'bûmes',vous:'bûtes',ils:'burent'}
+    }
+  };
+  var GROUP1_VERBS = ['chanter','jouer','parler','aimer','donner','regarder','écouter','marcher','danser','manger','dessiner','chercher','trouver','aider','montrer'];
+  var GROUP2_VERBS = ['finir','choisir','grandir','réfléchir','remplir','réussir','rougir','obéir','agir','punir'];
+  var GROUP3_VERBS = ['faire','prendre','voir','pouvoir','vouloir','dire','mettre','boire'];
+  var ALL_VERBS = ['être','avoir'].concat(GROUP1_VERBS, GROUP2_VERBS, GROUP3_VERBS);
+  var PRONOUNS = ['je','tu','il','nous','vous','ils'];
+  var PRONOUN_DISPLAY = {je:'je', tu:'tu', il:'il / elle / on', nous:'nous', vous:'vous', ils:'ils / elles'};
+  var SPEAK_PRONOUN = {je:'je', tu:'tu', il:'il', nous:'nous', vous:'vous', ils:'ils'};
+  var PRONOUN_SUBJECTS = {
+    je:['je'], tu:['tu'], il:['il','elle','Léo','Mia','Tom'],
+    nous:['nous'], vous:['vous'], ils:['ils','elles','les enfants','mes amis']
+  };
+  var TENSE_INFO = { present:{label:'Présent'}, passe:{label:'Passé composé'}, futur:{label:'Futur simple'}, passeSimple:{label:'Passé simple'}, melange:{label:'🎲 Tous les temps'} };
+  var VERB_CATEGORIES = {
+    'être':{label:'Être', pool:['être']},
+    'avoir':{label:'Avoir', pool:['avoir']},
+    'groupe1':{label:'1er groupe', pool:GROUP1_VERBS},
+    'groupe2':{label:'2e groupe', pool:GROUP2_VERBS},
+    'groupe3':{label:'3e groupe', pool:GROUP3_VERBS},
+    'melange':{label:'🎲 Mélange', pool:ALL_VERBS}
+  };
+
+  var SOUND_LETTERS = ['p','d','b','g','ch','cl','m','gn','sc','st'];
+  var GRAPHEME_MODE = { p:'start', d:'start', b:'start', g:'start', ch:'start', cl:'start', m:'start', gn:'contains', sc:'start', st:'start' };
+  var WORD_BANK = {
+    p:['pomme','papa','pain','poisson','poule'],
+    d:['dent','domino','doigt','dauphin','dinosaure'],
+    b:['ballon','bébé','banane','bateau','bulle'],
+    g:['gâteau','guitare','gomme','girafe','gant'],
+    ch:['chat','cheval','chaussette','chocolat','chien'],
+    cl:['clé','classe','clown','clou','climat'],
+    m:['maman','moto','maison','melon','mouton'],
+    gn:['montagne','araignée','campagne','agneau','cygne'],
+    sc:['science','scie','sculpture','scooter','scarabée'],
+    st:['stylo','statue','studio','stade','steak']
+  };
+  var LECTURE_MODES = {
+    reconnaitre:{label:'Reconnaître le son', desc:'Quel mot commence pareil ?'},
+    ecouter:{label:'Écoute et choisis', desc:'Retrouve le mot entendu'},
+    completer:{label:'Complète le mot', desc:'Choisis la bonne lettre'}
+  };
+
+  var ICONS = {
+    star:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87L18.2 21 12 17.4 5.8 21 7 14.14l-5-4.87 7.1-1.01L12 2z"/></svg>',
+    back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg>',
+    math:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M12 8v8"/></svg>',
+    francais:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
+    lecture:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5c3 0 6 1 8 3v11c-2-2-5-3-8-3z"/><path d="M21 5c-3 0-6 1-8 3v11c2-2 5-3 8-3z"/></svg>',
+    tables:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5l14 14M19 5L5 19"/></svg>',
+    speak:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>'
+  };
+
+  /* ---------- helpers ---------- */
+  function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+  function pick(arr){ return arr[randInt(0,arr.length-1)]; }
+  function shuffle(arr){
+    var a = arr.slice();
+    for(var i=a.length-1;i>0;i--){ var j=randInt(0,i); var t=a[i]; a[i]=a[j]; a[j]=t; }
+    return a;
+  }
+  function capitalize(s){
+    if(s.indexOf('j’')===0) return 'J’'+s.slice(2);
+    return s.charAt(0).toUpperCase()+s.slice(1);
+  }
+  function reducedMotion(){
+    return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+  function speak(text){
+    try{
+      if(!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      var u = new SpeechSynthesisUtterance(text);
+      u.lang = 'fr-FR';
+      u.rate = 0.85;
+      window.speechSynthesis.speak(u);
+    }catch(e){ /* speech not available */ }
+  }
+  function speakSequence(lines, idx){
+    idx = idx || 0;
+    try{
+      if(!('speechSynthesis' in window)) return;
+      if(idx===0) window.speechSynthesis.cancel();
+      if(idx>=lines.length) return;
+      var u = new SpeechSynthesisUtterance(lines[idx]);
+      u.lang = 'fr-FR';
+      u.rate = 0.85;
+      u.onend = function(){ speakSequence(lines, idx+1); };
+      window.speechSynthesis.speak(u);
+    }catch(e){ /* speech not available */ }
+  }
+
+  /* ---------- state ---------- */
+  var state = {
+    screen:'home',
+    stars: loadStars(),
+    math:{ level:null, op:null, mode:null },
+    verb:{ category:null, tense:null },
+    lecture:{ letter:null, mode:null },
+    tables:{ number:null },
+    session:null
+  };
+
+  function loadStars(){
+    try{
+      var v = parseInt(window.localStorage.getItem('cda_stars')||'0',10);
+      return isNaN(v) ? 0 : v;
+    }catch(e){ return 0; }
+  }
+  function saveStars(){
+    try{ window.localStorage.setItem('cda_stars', String(state.stars)); }catch(e){ /* storage unavailable, keep in-memory only */ }
+  }
+
+  var app = document.getElementById('app');
+
+  function go(screen){ state.screen = screen; render(); window.scrollTo(0,0); }
+
+  /* ---------- shell ---------- */
+  function shell(bodyHtml, backHandler){
+    app.innerHTML =
+      '<div class="topbar">' +
+        (backHandler ? '<button class="btn-back" id="btnBack">'+ICONS.back+'<span>Retour</span></button>' : '<span></span>') +
+        '<span class="spacer"></span>' +
+        '<span class="stars-counter">'+ICONS.star+'<span>'+state.stars+'</span></span>' +
+      '</div>' +
+      '<main class="stage"><div class="wrap">'+bodyHtml+'</div></main>' +
+      '<footer class="credits">Carnet d’Aventures — CP à CM2</footer>';
+    if(backHandler){ document.getElementById('btnBack').addEventListener('click', backHandler); }
+  }
+
+  /* ================= HOME ================= */
+  function renderHome(){
+    var body =
+      '<div class="hero">' +
+        '<h1 class="hero-title"><span class="doodle">Bienvenue dans le</span>Carnet d’Aventures</h1>' +
+        '<p class="hero-sub">Choisis un royaume pour t’entraîner en t’amusant.</p>' +
+      '</div>' +
+      '<div class="portal-grid">' +
+        '<button class="portal" id="portalMath" style="--accent:var(--accent-math)"><span class="icon">'+ICONS.math+'</span><h2>Maths</h2><p>Additions, soustractions et multiplications, du CP au CM2.</p></button>' +
+        '<button class="portal" id="portalTables" style="--accent:var(--accent-tables)"><span class="icon">'+ICONS.tables+'</span><h2>Tables ×</h2><p>Apprends les tables de multiplication de 1 à 12 par cœur.</p></button>' +
+        '<button class="portal" id="portalFr" style="--accent:var(--accent-fr)"><span class="icon">'+ICONS.francais+'</span><h2>Français — Verbes</h2><p>Être, avoir et les verbes des 1er, 2e et 3e groupes, au présent, passé et futur.</p></button>' +
+        '<button class="portal" id="portalLecture" style="--accent:var(--accent-lecture)"><span class="icon">'+ICONS.lecture+'</span><h2>Lecture — Sons</h2><p>Distingue p, d, b, g, ch, cl, m, gn, sc et st dans les mots.</p></button>' +
+      '</div>';
+    shell(body, null);
+    document.getElementById('portalMath').addEventListener('click', function(){ go('math-level'); });
+    document.getElementById('portalTables').addEventListener('click', function(){ go('tables-select'); });
+    document.getElementById('portalFr').addEventListener('click', function(){ go('verb-category'); });
+    document.getElementById('portalLecture').addEventListener('click', function(){ go('lecture-letter'); });
+  }
+
+  /* ================= MATH ================= */
+  function renderMathLevel(){
+    var buttons = LEVEL_ORDER.map(function(lvl){
+      var info = LEVEL_INFO[lvl];
+      return '<button class="pick-btn" data-level="'+lvl+'"><span class="big">'+info.label+'</span><small>'+info.desc+'</small></button>';
+    }).join('');
+    var body =
+      '<div class="section-title"><span class="icon" style="color:var(--accent-math)">'+ICONS.math+'</span><h2>Choisis ta classe</h2></div>' +
+      '<div class="choice-grid">'+buttons+'</div>';
+    shell(body, function(){ go('home'); });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-level]'), function(btn){
+      btn.addEventListener('click', function(){
+        state.math.level = btn.getAttribute('data-level');
+        go('math-op');
+      });
+    });
+  }
+
+  function renderMathOp(){
+    var ops = LEVEL_INFO[state.math.level].ops;
+    var buttons = ops.map(function(op){
+      var info = OP_INFO[op];
+      return '<button class="pick-btn" data-op="'+op+'"><span class="big">'+info.symbol+'</span><small>'+info.label+'</small></button>';
+    }).join('');
+    var body =
+      '<div class="section-title"><span class="icon" style="color:var(--accent-math)">'+ICONS.math+'</span><h2>'+LEVEL_INFO[state.math.level].label+' — quelle opération ?</h2></div>' +
+      '<div class="choice-grid">'+buttons+'</div>';
+    shell(body, function(){ go('math-level'); });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-op]'), function(btn){
+      btn.addEventListener('click', function(){
+        state.math.op = btn.getAttribute('data-op');
+        go('math-mode');
+      });
+    });
+  }
+
+  function renderMathMode(){
+    var modes = ['direct','trou','qcm'];
+    if(state.math.level==='CP') modes.push('objets');
+    var buttons = modes.map(function(m){
+      var info = MODE_INFO[m];
+      return '<button class="pick-btn" data-mode="'+m+'"><span class="big">'+info.icon+'</span>'+info.label+'<small>'+info.desc+'</small></button>';
+    }).join('');
+    var body =
+      '<div class="section-title"><span class="icon" style="color:var(--accent-math)">'+ICONS.math+'</span><h2>Quel type de calcul ?</h2></div>' +
+      '<div class="choice-grid">'+buttons+'</div>';
+    shell(body, function(){ go('math-op'); });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-mode]'), function(btn){
+      btn.addEventListener('click', function(){
+        state.math.mode = btn.getAttribute('data-mode');
+        startMathSession();
+      });
+    });
+  }
+
+  function genPair(level, op){
+    var a,b,res;
+    if(op==='add'){
+      if(level==='CP'){ a=randInt(1,9); b=randInt(0,10-a); }
+      else if(level==='CE1'){ a=randInt(5,60); b=randInt(5,Math.min(60,98-a)); }
+      else if(level==='CE2'){ a=randInt(10,500); b=randInt(10,Math.min(490,998-a)); }
+      else if(level==='CM1'){ a=randInt(100,5000); b=randInt(100,Math.min(4000,9998-a)); }
+      else { a=randInt(1000,50000); b=randInt(1000,Math.min(40000,99998-a)); }
+      res=a+b;
+    } else if(op==='sub'){
+      if(level==='CP'){ a=randInt(2,10); b=randInt(0,a); }
+      else if(level==='CE1'){ a=randInt(10,99); b=randInt(0,a); }
+      else if(level==='CE2'){ a=randInt(100,999); b=randInt(0,a); }
+      else if(level==='CM1'){ a=randInt(1000,9999); b=randInt(0,a); }
+      else { a=randInt(10000,99999); b=randInt(0,a); }
+      res=a-b;
+    } else {
+      if(level==='CE1'){ a=pick([2,5,10]); b=randInt(1,10); }
+      else if(level==='CE2'){ a=randInt(2,10); b=randInt(1,10); }
+      else if(level==='CM1'){ a=randInt(11,99); b=randInt(2,9); }
+      else { a=randInt(11,99); b=randInt(11,99); }
+      if(Math.random()<0.5){ var t=a; a=b; b=t; }
+      res=a*b;
+    }
+    return {a:a,b:b,res:res};
+  }
+
+  function buildChoices(res){
+    var set = [res];
+    var guard = 0;
+    while(set.length<4 && guard<50){
+      guard++;
+      var delta = randInt(1, Math.max(3, Math.round(res*0.15)+2));
+      var cand = Math.random()<0.5 ? res+delta : res-delta;
+      if(cand>=0 && set.indexOf(cand)===-1) set.push(cand);
+    }
+    return shuffle(set);
+  }
+
+  function buildObjetsQuestion(op,a,b,res){
+    var emoji = '🍎';
+    var html, group, i;
+    if(op==='add'){
+      html = '<div class="objets-row"><span class="objets-group">'+emoji.repeat(a)+'</span><span class="objets-op">+</span><span class="objets-group">'+emoji.repeat(b)+'</span></div>' +
+        '<p class="objets-question">Combien de pommes en tout ?</p>';
+    } else {
+      group='';
+      for(i=0;i<a;i++){ group += i<b ? '<span class="crossed">'+emoji+'</span>' : emoji; }
+      html = '<div class="objets-row"><span class="objets-group">'+group+'</span></div>' +
+        '<p class="objets-question">On enlève '+b+'. Combien en reste-t-il ?</p>';
+    }
+    return {kind:'input', html:html, answer:res};
+  }
+
+  function buildMathQuestion(level, op, mode){
+    var pair = genPair(level, op);
+    var a=pair.a, b=pair.b, res=pair.res;
+    var sym = OP_INFO[op].symbol;
+    if(mode==='objets'){ return buildObjetsQuestion(op,a,b,res); }
+    if(mode==='trou'){
+      var hide = pick(['a','b','res']);
+      var text, answer;
+      if(hide==='a'){ text = '? '+sym+' '+b+' = '+res; answer = op==='add' ? res-b : (op==='sub' ? res+b : res/b); }
+      else if(hide==='b'){ text = a+' '+sym+' ? = '+res; answer = op==='add' ? res-a : (op==='sub' ? a-res : res/a); }
+      else { text = a+' '+sym+' '+b+' = ?'; answer = res; }
+      return {kind:'input', text:text, answer:answer};
+    }
+    if(mode==='qcm'){
+      var qtext = a+' '+sym+' '+b+' = ?';
+      return {kind:'choice', text:qtext, answer:res, choices:buildChoices(res)};
+    }
+    var dtext = a+' '+sym+' '+b+' = ?';
+    return {kind:'input', text:dtext, answer:res};
+  }
+
+  function startMathSession(){
+    state.session = { section:'math', total:10, index:0, correct:0, current:null, locked:false };
+    nextMathQuestion();
+  }
+  function nextMathQuestion(){
+    state.session.current = buildMathQuestion(state.math.level, state.math.op, state.math.mode);
+    state.session.locked = false;
+    renderMathPlay();
+  }
+
+  function progressBlock(){
+    var s = state.session;
+    var pct = Math.round((s.index/s.total)*100);
+    return '<div class="progress-row">' +
+      '<div class="progress-track"><div class="progress-fill" style="width:'+pct+'%"></div></div>' +
+      '<span class="progress-count">'+s.index+' / '+s.total+'</span>' +
+    '</div>';
+  }
+
+  function renderMathPlay(){
+    var s = state.session;
+    var q = s.current;
+    var body = '<div class="card" style="--accent:var(--accent-math)">' +
+      progressBlock() +
+      (q.html ? q.html : '<p class="question-text">'+q.text+'</p>');
+    if(q.kind==='choice'){
+      body += '<div class="choice-answers" id="answerZone">' +
+        q.choices.map(function(c){ return '<button class="choice-btn" data-val="'+c+'">'+c+'</button>'; }).join('') +
+      '</div>';
+    } else {
+      body += '<div class="answer-row" id="answerZone">' +
+        '<input class="answer-input" id="mathInput" type="text" inputmode="numeric" autocomplete="off" placeholder="?" />' +
+        '<button class="btn-validate" id="mathValidate">Valider</button>' +
+      '</div>';
+    }
+    body += '<div id="feedbackZone"></div>';
+    body += '</div>';
+    shell(body, function(){ go('math-mode'); });
+
+    if(q.kind==='choice'){
+      Array.prototype.forEach.call(document.querySelectorAll('.choice-btn'), function(btn){
+        btn.addEventListener('click', function(){ evalMathChoice(parseInt(btn.getAttribute('data-val'),10), btn); });
+      });
+    } else {
+      var input = document.getElementById('mathInput');
+      var vbtn = document.getElementById('mathValidate');
+      input.focus();
+      function submit(){ evalMathInput(input.value); }
+      vbtn.addEventListener('click', submit);
+      input.addEventListener('keydown', function(e){ if(e.key==='Enter') submit(); });
+    }
+  }
+
+  function lockAnswerZone(){
+    Array.prototype.forEach.call(document.querySelectorAll('#answerZone button, #answerZone input'), function(el){ el.disabled = true; });
+  }
+
+  function mathFeedback(correct, correctVal){
+    var s = state.session;
+    if(correct) s.correct++;
+    s.index++;
+    var msgGood = pick(['Bravo !','Super !','Génial !','Trop fort !','Bien joué !']);
+    var html = correct
+      ? '<div class="feedback good">'+msgGood+' ✨</div>'
+      : '<div class="feedback bad">Presque !<small>La bonne réponse était '+correctVal+'</small></div>';
+    document.getElementById('feedbackZone').innerHTML = html +
+      '<div class="actions-row"><button class="btn-primary" id="nextBtn">'+(s.index>=s.total?'Voir mon score':'Suivant')+'</button></div>';
+    document.getElementById('nextBtn').addEventListener('click', function(){
+      if(s.index>=s.total){ go('math-result'); } else { nextMathQuestion(); }
+    });
+  }
+
+  function evalMathChoice(val, btn){
+    var s = state.session;
+    if(s.locked) return;
+    s.locked = true;
+    var correct = val === state.session.current.answer;
+    lockAnswerZone();
+    Array.prototype.forEach.call(document.querySelectorAll('.choice-btn'), function(b){
+      var v = parseInt(b.getAttribute('data-val'),10);
+      if(v===state.session.current.answer) b.classList.add('is-correct');
+      else if(b===btn) b.classList.add('is-wrong');
+      else b.classList.add('is-dim');
+    });
+    mathFeedback(correct, state.session.current.answer);
+  }
+
+  function evalMathInput(raw){
+    var s = state.session;
+    if(s.locked) return;
+    var val = parseInt(String(raw).trim(),10);
+    if(isNaN(val)) return;
+    s.locked = true;
+    lockAnswerZone();
+    mathFeedback(val === s.current.answer, s.current.answer);
+  }
+
+  function renderMathResult(){ renderGenericResult('math-op', 'Rejouer', 'Autre opération'); }
+
+  /* ================= VERBES ================= */
+  function conjugate(verb, tense, pronoun){
+    if(IRREGULAR_VERBS[verb]) return IRREGULAR_VERBS[verb][tense][pronoun];
+    var isGroup2 = verb.slice(-2)==='ir';
+    var stem = verb.slice(0,-2);
+    if(tense==='present'){
+      if(isGroup2){
+        var endings2 = {je:'is',tu:'is',il:'it',nous:'issons',vous:'issez',ils:'issent'};
+        return stem+endings2[pronoun];
+      }
+      var endings1 = {je:'e',tu:'es',il:'e',nous:(verb.slice(-3)==='ger'?'eons':'ons'),vous:'ez',ils:'ent'};
+      return stem+endings1[pronoun];
+    }
+    if(tense==='futur'){
+      var fEndings = {je:'ai',tu:'as',il:'a',nous:'ons',vous:'ez',ils:'ont'};
+      return verb+fEndings[pronoun];
+    }
+    if(tense==='passeSimple'){
+      if(isGroup2){
+        var psEndings2 = {je:'is',tu:'is',il:'it',nous:'îmes',vous:'îtes',ils:'irent'};
+        return stem+psEndings2[pronoun];
+      }
+      var psEndings1 = {je:'ai',tu:'as',il:'a',nous:'âmes',vous:'âtes',ils:'èrent'};
+      var psStem = (verb.slice(-3)==='ger' && pronoun!=='ils') ? stem+'e' : stem;
+      return psStem+psEndings1[pronoun];
+    }
+    var aux = {je:'ai',tu:'as',il:'a',nous:'avons',vous:'avez',ils:'ont'};
+    return aux[pronoun]+' '+stem+(isGroup2?'i':'é');
+  }
+
+  function subjectFor(pronoun, form){
+    var subj = pick(PRONOUN_SUBJECTS[pronoun]);
+    if(pronoun==='je'){
+      return /^[aeiouhéèê]/i.test(form) ? 'j’'+form : 'je '+form;
+    }
+    return subj+' '+form;
+  }
+
+  function canonicalSubject(pronoun, form){
+    if(pronoun==='je'){
+      return /^[aeiouhéèê]/i.test(form) ? 'j’'+form : 'je '+form;
+    }
+    return PRONOUN_DISPLAY[pronoun]+' '+form;
+  }
+
+  function speakableLine(pronoun, form){
+    if(pronoun==='je'){
+      return /^[aeiouhéèê]/i.test(form) ? 'j’'+form : 'je '+form;
+    }
+    return SPEAK_PRONOUN[pronoun]+' '+form;
+  }
+
+  function buildVerbQuestion(pool, tense){
+    var actualTense = tense==='melange' ? pick(['present','passe','futur','passeSimple']) : tense;
+    var verb = pick(pool);
+    var target = pick(PRONOUNS);
+    var others = shuffle(PRONOUNS.filter(function(p){ return p!==target; })).slice(0,3);
+    var correctText = capitalize(subjectFor(target, conjugate(verb,actualTense,target)));
+    var choiceTexts = shuffle([correctText].concat(others.map(function(p){
+      return capitalize(subjectFor(p, conjugate(verb,actualTense,p)));
+    })));
+    return {
+      verb:verb, tense:actualTense, pronoun:target,
+      prompt:'Conjugue <strong style="color:var(--accent-fr)">'+verb+'</strong> au <strong>'+TENSE_INFO[actualTense].label+'</strong> avec <strong>'+PRONOUN_DISPLAY[target]+'</strong>',
+      answer:correctText, choices:choiceTexts
+    };
+  }
+
+  function renderVerbCategory(){
+    var buttons = Object.keys(VERB_CATEGORIES).map(function(key){
+      var info = VERB_CATEGORIES[key];
+      return '<button class="pick-btn" data-cat="'+key+'"><span class="big">'+info.label+'</span></button>';
+    }).join('');
+    var body =
+      '<div class="section-title"><span class="icon" style="color:var(--accent-fr)">'+ICONS.francais+'</span><h2>Quel verbe veux-tu travailler ?</h2></div>' +
+      '<div class="choice-grid">'+buttons+'</div>';
+    shell(body, function(){ go('home'); });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-cat]'), function(btn){
+      btn.addEventListener('click', function(){
+        var cat = btn.getAttribute('data-cat');
+        state.verb.category = cat;
+        go((cat==='être' || cat==='avoir') ? 'verb-learn' : 'verb-tense');
+      });
+    });
+  }
+
+  function renderVerbLearn(){
+    var verb = state.verb.category;
+    var tenses = ['present','passe','futur','passeSimple'];
+    var blocks = tenses.map(function(tense){
+      var rows = PRONOUNS.map(function(pn){
+        var form = conjugate(verb, tense, pn);
+        var display = capitalize(canonicalSubject(pn, form));
+        var speakText = speakableLine(pn, form);
+        return '<div class="table-line"><span>'+display+'</span>' +
+          '<button class="line-speak" data-line="'+speakText+'" aria-label="Écouter">'+ICONS.speak+'</button></div>';
+      }).join('');
+      return '<div class="verb-tense-block">' +
+        '<h3 class="verb-tense-heading">'+TENSE_INFO[tense].label+'</h3>' +
+        '<div class="table-list">'+rows+'</div>' +
+      '</div>';
+    }).join('');
+    var body =
+      '<div class="card" style="--accent:var(--accent-fr)">' +
+        '<div class="section-title"><span class="icon" style="color:var(--accent-fr)">'+ICONS.francais+'</span><h2>'+capitalize(verb)+' — à apprendre par cœur</h2></div>' +
+        '<div style="text-align:center;margin-bottom:8px"><button class="speak-btn" id="listenAllVerb">'+ICONS.speak+'<span>Écouter toute la conjugaison</span></button></div>' +
+        blocks +
+        '<div class="actions-row"><button class="btn-primary" id="goExercises">Je me lance dans les exercices !</button></div>' +
+      '</div>';
+    shell(body, function(){ go('verb-category'); });
+    document.getElementById('goExercises').addEventListener('click', function(){ go('verb-tense'); });
+    document.getElementById('listenAllVerb').addEventListener('click', function(){
+      var lines = [];
+      tenses.forEach(function(tense){
+        lines.push(TENSE_INFO[tense].label);
+        PRONOUNS.forEach(function(pn){
+          lines.push(speakableLine(pn, conjugate(verb, tense, pn)));
+        });
+      });
+      speakSequence(lines);
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('.line-speak'), function(btn){
+      btn.addEventListener('click', function(){ speak(btn.getAttribute('data-line')); });
+    });
+  }
+
+  function renderVerbTense(){
+    var buttons = Object.keys(TENSE_INFO).map(function(key){
+      return '<button class="pick-btn" data-tense="'+key+'"><span class="big">'+TENSE_INFO[key].label+'</span></button>';
+    }).join('');
+    var cat = state.verb.category;
+    var backTarget = (cat==='être' || cat==='avoir') ? 'verb-learn' : 'verb-category';
+    var body =
+      '<div class="section-title"><span class="icon" style="color:var(--accent-fr)">'+ICONS.francais+'</span><h2>'+VERB_CATEGORIES[cat].label+' — quel temps ?</h2></div>' +
+      '<div class="choice-grid">'+buttons+'</div>';
+    shell(body, function(){ go(backTarget); });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-tense]'), function(btn){
+      btn.addEventListener('click', function(){ state.verb.tense = btn.getAttribute('data-tense'); startVerbSession(); });
+    });
+  }
+
+  function startVerbSession(){
+    state.session = { section:'verb', total:8, index:0, correct:0, current:null, locked:false };
+    nextVerbQuestion();
+  }
+  function nextVerbQuestion(){
+    var pool = VERB_CATEGORIES[state.verb.category].pool;
+    state.session.current = buildVerbQuestion(pool, state.verb.tense);
+    state.session.locked = false;
+    renderVerbPlay();
+  }
+
+  function renderVerbPlay(){
+    var s = state.session;
+    var q = s.current;
+    var body = '<div class="card" style="--accent:var(--accent-fr)">' +
+      progressBlock() +
+      '<p class="question-meta">'+q.prompt+'</p>' +
+      '<div class="choice-answers" id="answerZone">' +
+        q.choices.map(function(c){ return '<button class="choice-btn verb-choice" data-val="'+encodeURIComponent(c)+'">'+c+'</button>'; }).join('') +
+      '</div>' +
+      '<div id="feedbackZone"></div>' +
+    '</div>';
+    shell(body, function(){ go('verb-tense'); });
+    Array.prototype.forEach.call(document.querySelectorAll('.choice-btn'), function(btn){
+      btn.addEventListener('click', function(){ evalVerbChoice(decodeURIComponent(btn.getAttribute('data-val')), btn); });
+    });
+  }
+
+  function evalVerbChoice(val, btn){
+    var s = state.session;
+    if(s.locked) return;
+    s.locked = true;
+    var correct = val === s.current.answer;
+    lockAnswerZone();
+    Array.prototype.forEach.call(document.querySelectorAll('.choice-btn'), function(b){
+      var v = decodeURIComponent(b.getAttribute('data-val'));
+      if(v===s.current.answer) b.classList.add('is-correct');
+      else if(b===btn) b.classList.add('is-wrong');
+      else b.classList.add('is-dim');
+    });
+    if(correct) s.correct++;
+    s.index++;
+    var msgGood = pick(['Bravo !','Super !','Génial !','Trop fort !','Bien joué !']);
+    document.getElementById('feedbackZone').innerHTML =
+      (correct ? '<div class="feedback good">'+msgGood+' ✨</div>' : '<div class="feedback bad">Presque !<small>La bonne réponse était « '+s.current.answer+' »</small></div>') +
+      '<div class="actions-row"><button class="btn-primary" id="nextBtn">'+(s.index>=s.total?'Voir mon score':'Suivant')+'</button></div>';
+    document.getElementById('nextBtn').addEventListener('click', function(){
+      if(s.index>=s.total){ go('verb-result'); } else { nextVerbQuestion(); }
+    });
+  }
+
+  function renderVerbResult(){ renderGenericResult('verb-category', 'Rejouer', 'Changer de verbe'); }
+
+  /* ================= LECTURE ================= */
+  function distractorWords(letter, n){
+    var others = shuffle(SOUND_LETTERS.filter(function(l){ return l!==letter; }));
+    var words = [];
+    for(var i=0;i<others.length && words.length<n;i++){ words.push(pick(WORD_BANK[others[i]])); }
+    return words;
+  }
+
+  function buildLectureQuestion(letter, mode){
+    if(mode==='reconnaitre'){
+      var correct = pick(WORD_BANK[letter]);
+      var choices = shuffle([correct].concat(distractorWords(letter,3)));
+      var reconPrompt = GRAPHEME_MODE[letter]==='contains' ? 'Quel mot contient le son « '+letter+' » ?' : 'Quel mot commence par « '+letter+' » ?';
+      return {kind:'reconnaitre', prompt:reconPrompt, answer:correct, choices:choices};
+    }
+    if(mode==='ecouter'){
+      var target = pick(WORD_BANK[letter]);
+      var choices2 = shuffle([target].concat(distractorWords(letter,3)));
+      return {kind:'ecouter', prompt:'Écoute puis choisis le bon mot.', answer:target, choices:choices2, speakWord:target};
+    }
+    var word = pick(WORD_BANK[letter]);
+    var idx = word.indexOf(letter);
+    var prefix = word.slice(0, idx);
+    var suffix = word.slice(idx + letter.length);
+    var otherLetters = shuffle(SOUND_LETTERS.filter(function(l){ return l!==letter; })).slice(0,3);
+    var choices3 = shuffle([letter].concat(otherLetters));
+    return {kind:'completer', prompt:'Complète le mot :', word:word, prefix:prefix, suffix:suffix, answer:letter, choices:choices3};
+  }
+
+  function renderLectureLetter(){
+    var buttons = SOUND_LETTERS.map(function(l){
+      return '<button class="pick-btn" data-letter="'+l+'"><span class="big">'+l+'</span></button>';
+    }).join('');
+    var body =
+      '<div class="section-title"><span class="icon" style="color:var(--accent-lecture)">'+ICONS.lecture+'</span><h2>Quelle lettre veux-tu travailler ?</h2></div>' +
+      '<div class="choice-grid">'+buttons+'</div>';
+    shell(body, function(){ go('home'); });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-letter]'), function(btn){
+      btn.addEventListener('click', function(){ state.lecture.letter = btn.getAttribute('data-letter'); go('lecture-mode'); });
+    });
+  }
+
+  function renderLectureMode(){
+    var buttons = Object.keys(LECTURE_MODES).map(function(key){
+      var info = LECTURE_MODES[key];
+      return '<button class="pick-btn" data-lmode="'+key+'"><span class="big">'+info.label+'</span><small>'+info.desc+'</small></button>';
+    }).join('');
+    var body =
+      '<div class="section-title"><span class="icon" style="color:var(--accent-lecture)">'+ICONS.lecture+'</span><h2>Lettre « '+state.lecture.letter+' » — quel exercice ?</h2></div>' +
+      '<div class="choice-grid">'+buttons+'</div>';
+    shell(body, function(){ go('lecture-letter'); });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-lmode]'), function(btn){
+      btn.addEventListener('click', function(){ state.lecture.mode = btn.getAttribute('data-lmode'); startLectureSession(); });
+    });
+  }
+
+  function startLectureSession(){
+    state.session = { section:'lecture', total:8, index:0, correct:0, current:null, locked:false };
+    nextLectureQuestion();
+  }
+  function nextLectureQuestion(){
+    state.session.current = buildLectureQuestion(state.lecture.letter, state.lecture.mode);
+    state.session.locked = false;
+    renderLecturePlay();
+  }
+
+  function renderLecturePlay(){
+    var s = state.session;
+    var q = s.current;
+    var top;
+    if(q.kind==='completer'){
+      top = '<p class="question-meta">'+q.prompt+'</p><p class="question-text">'+q.prefix+'___'+q.suffix+'</p>';
+    } else {
+      top = '<p class="question-meta">'+q.prompt+'</p>';
+      if(q.kind==='ecouter'){
+        top += '<div style="text-align:center"><button class="speak-btn" id="speakBtn">'+ICONS.speak+'<span>Écouter le mot</span></button></div>';
+      }
+    }
+    var body = '<div class="card" style="--accent:var(--accent-lecture)">' +
+      progressBlock() + top +
+      '<div class="choice-answers" id="answerZone">' +
+        q.choices.map(function(c){ return '<button class="choice-btn" data-val="'+encodeURIComponent(c)+'">'+c+'</button>'; }).join('') +
+      '</div>' +
+      '<div id="feedbackZone"></div>' +
+    '</div>';
+    shell(body, function(){ go('lecture-mode'); });
+
+    if(q.kind==='ecouter'){
+      var sb = document.getElementById('speakBtn');
+      sb.addEventListener('click', function(){ speak(q.speakWord); });
+      speak(q.speakWord);
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('.choice-btn'), function(btn){
+      btn.addEventListener('click', function(){ evalLectureChoice(decodeURIComponent(btn.getAttribute('data-val')), btn); });
+    });
+  }
+
+  function evalLectureChoice(val, btn){
+    var s = state.session;
+    if(s.locked) return;
+    s.locked = true;
+    var correct = val === s.current.answer;
+    lockAnswerZone();
+    Array.prototype.forEach.call(document.querySelectorAll('.choice-btn'), function(b){
+      var v = decodeURIComponent(b.getAttribute('data-val'));
+      if(v===s.current.answer) b.classList.add('is-correct');
+      else if(b===btn) b.classList.add('is-wrong');
+      else b.classList.add('is-dim');
+    });
+    if(correct) s.correct++;
+    s.index++;
+    var msgGood = pick(['Bravo !','Super !','Génial !','Trop fort !','Bien joué !']);
+    document.getElementById('feedbackZone').innerHTML =
+      (correct ? '<div class="feedback good">'+msgGood+' ✨</div>' : '<div class="feedback bad">Presque !<small>La bonne réponse était « '+s.current.answer+' »</small></div>') +
+      '<div class="actions-row"><button class="btn-primary" id="nextBtn">'+(s.index>=s.total?'Voir mon score':'Suivant')+'</button></div>';
+    document.getElementById('nextBtn').addEventListener('click', function(){
+      if(s.index>=s.total){ go('lecture-result'); } else { nextLectureQuestion(); }
+    });
+  }
+
+  function renderLectureResult(){ renderGenericResult('lecture-letter', 'Rejouer', 'Changer de lettre'); }
+
+  /* ================= TABLES DE MULTIPLICATION ================= */
+  function renderTablesSelect(){
+    var nums = [1,2,3,4,5,6,7,8,9,10,11,12];
+    var buttons = nums.map(function(n){
+      return '<button class="pick-btn" data-tnum="'+n+'"><span class="big">'+n+'</span></button>';
+    }).join('');
+    buttons += '<button class="pick-btn" data-tnum="mix"><span class="big">🎲</span>Mélange<small>Toutes les tables</small></button>';
+    var body =
+      '<div class="section-title"><span class="icon" style="color:var(--accent-tables)">'+ICONS.tables+'</span><h2>Quelle table veux-tu apprendre ?</h2></div>' +
+      '<div class="choice-grid">'+buttons+'</div>';
+    shell(body, function(){ go('home'); });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-tnum]'), function(btn){
+      btn.addEventListener('click', function(){
+        var v = btn.getAttribute('data-tnum');
+        state.tables.number = v==='mix' ? 'mix' : parseInt(v,10);
+        go('tables-mode');
+      });
+    });
+  }
+
+  function renderTablesMode(){
+    var isMix = state.tables.number==='mix';
+    var title = isMix ? 'Mélange de toutes les tables' : 'Table de '+state.tables.number;
+    var buttons = '';
+    if(!isMix){
+      buttons += '<button class="pick-btn" id="btnLearn"><span class="big">📖</span>Apprendre<small>Revoir la table</small></button>';
+    }
+    buttons += '<button class="pick-btn" id="btnDrill"><span class="big">✏️</span>S’entraîner<small>Teste-toi !</small></button>';
+    var body =
+      '<div class="section-title"><span class="icon" style="color:var(--accent-tables)">'+ICONS.tables+'</span><h2>'+title+'</h2></div>' +
+      '<div class="choice-grid">'+buttons+'</div>';
+    shell(body, function(){ go('tables-select'); });
+    if(!isMix){ document.getElementById('btnLearn').addEventListener('click', function(){ go('tables-learn'); }); }
+    document.getElementById('btnDrill').addEventListener('click', function(){ startTablesSession(state.tables.number); });
+  }
+
+  function renderTablesLearn(){
+    var n = state.tables.number;
+    var lines = [];
+    for(var k=1;k<=12;k++){ lines.push({k:k, res:n*k}); }
+    var rows = lines.map(function(l){
+      return '<div class="table-line"><span>'+n+' × '+l.k+' = '+l.res+'</span>' +
+        '<button class="line-speak" data-line="'+n+' fois '+l.k+', égale '+l.res+'" aria-label="Écouter cette ligne">'+ICONS.speak+'</button></div>';
+    }).join('');
+    var body =
+      '<div class="card" style="--accent:var(--accent-tables)">' +
+        '<div class="section-title"><span class="icon" style="color:var(--accent-tables)">'+ICONS.tables+'</span><h2>Table de '+n+'</h2></div>' +
+        '<div style="text-align:center;margin-bottom:14px"><button class="speak-btn" id="listenAll">'+ICONS.speak+'<span>Écouter toute la table</span></button></div>' +
+        '<div class="table-list">'+rows+'</div>' +
+        '<div class="actions-row"><button class="btn-primary" id="goDrill">M’entraîner sur cette table</button></div>' +
+      '</div>';
+    shell(body, function(){ go('tables-mode'); });
+    document.getElementById('goDrill').addEventListener('click', function(){ startTablesSession(n); });
+    document.getElementById('listenAll').addEventListener('click', function(){
+      var texts = lines.map(function(l){ return n+' fois '+l.k+', égale '+l.res; });
+      speakSequence(texts);
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('.line-speak'), function(btn){
+      btn.addEventListener('click', function(){ speak(btn.getAttribute('data-line')); });
+    });
+  }
+
+  function buildTablesQueue(number){
+    if(number==='mix'){
+      var arr = [];
+      for(var i=0;i<15;i++){ arr.push({a:randInt(1,12), b:randInt(1,12)}); }
+      return arr;
+    }
+    var bs = shuffle([1,2,3,4,5,6,7,8,9,10,11,12]);
+    return bs.map(function(b){ return {a:number, b:b}; });
+  }
+
+  function startTablesSession(number){
+    var queue = buildTablesQueue(number);
+    state.session = { section:'tables', total:queue.length, index:0, correct:0, current:null, locked:false, queue:queue, tableNumber:number };
+    nextTableQuestion();
+  }
+  function nextTableQuestion(){
+    var pair = state.session.queue[state.session.index];
+    state.session.current = { text: pair.a+' × '+pair.b+' = ?', answer: pair.a*pair.b };
+    state.session.locked = false;
+    renderTablesPlay();
+  }
+
+  function renderTablesPlay(){
+    var s = state.session;
+    var q = s.current;
+    var body = '<div class="card" style="--accent:var(--accent-tables)">' +
+      progressBlock() +
+      '<p class="question-text">'+q.text+'</p>' +
+      '<div class="answer-row" id="answerZone">' +
+        '<input class="answer-input" id="tableInput" type="text" inputmode="numeric" autocomplete="off" placeholder="?" />' +
+        '<button class="btn-validate" id="tableValidate">Valider</button>' +
+      '</div>' +
+      '<div id="feedbackZone"></div>' +
+    '</div>';
+    shell(body, function(){ go('tables-mode'); });
+    var input = document.getElementById('tableInput');
+    var vbtn = document.getElementById('tableValidate');
+    input.focus();
+    function submit(){ evalTableInput(input.value); }
+    vbtn.addEventListener('click', submit);
+    input.addEventListener('keydown', function(e){ if(e.key==='Enter') submit(); });
+  }
+
+  function evalTableInput(raw){
+    var s = state.session;
+    if(s.locked) return;
+    var val = parseInt(String(raw).trim(),10);
+    if(isNaN(val)) return;
+    s.locked = true;
+    lockAnswerZone();
+    var correct = val === s.current.answer;
+    if(correct) s.correct++;
+    s.index++;
+    var msgGood = pick(['Bravo !','Super !','Génial !','Trop fort !','Bien joué !']);
+    document.getElementById('feedbackZone').innerHTML =
+      (correct ? '<div class="feedback good">'+msgGood+' ✨</div>' : '<div class="feedback bad">Presque !<small>La bonne réponse était '+s.current.answer+'</small></div>') +
+      '<div class="actions-row"><button class="btn-primary" id="nextBtn">'+(s.index>=s.total?'Voir mon score':'Suivant')+'</button></div>';
+    document.getElementById('nextBtn').addEventListener('click', function(){
+      if(s.index>=s.total){ go('tables-result'); } else { nextTableQuestion(); }
+    });
+  }
+
+  function renderTablesResult(){ renderGenericResult('tables-select', 'Rejouer', 'Changer de table'); }
+
+  /* ================= RESULT (shared) ================= */
+  function renderGenericResult(changeScreen, replayLabel, changeLabel){
+    var s = state.session;
+    var pct = s.total ? s.correct/s.total : 0;
+    var tier;
+    if(pct>=0.9){ tier={emoji:'🏆', msg:'Parfait !', stars:3}; }
+    else if(pct>=0.7){ tier={emoji:'🌟', msg:'Bravo, excellent travail !', stars:2}; }
+    else if(pct>=0.4){ tier={emoji:'👍', msg:'Bien joué, continue !', stars:1}; }
+    else { tier={emoji:'🌱', msg:'Continue à t’entraîner, tu vas y arriver !', stars:0}; }
+    state.stars += tier.stars;
+    saveStars();
+    var body = '<div class="card result-card">' +
+      '<div class="result-emoji">'+tier.emoji+'</div>' +
+      '<div class="result-score">'+s.correct+' / '+s.total+'</div>' +
+      '<p class="result-msg">'+tier.msg+'</p>' +
+      '<div class="result-stars">'+'⭐'.repeat(tier.stars)+(tier.stars===0?'☆☆☆':'') +'</div>' +
+      '<div class="actions-row">' +
+        '<button class="btn-primary" id="btnReplay">'+replayLabel+'</button>' +
+        '<button class="btn-secondary" id="btnChange">'+changeLabel+'</button>' +
+        '<button class="btn-secondary" id="btnHome">Accueil</button>' +
+      '</div>' +
+    '</div>';
+    shell(body, function(){ go(changeScreen); });
+    document.getElementById('btnReplay').addEventListener('click', function(){
+      if(state.session.section==='math') startMathSession();
+      else if(state.session.section==='verb') startVerbSession();
+      else if(state.session.section==='lecture') startLectureSession();
+      else startTablesSession(state.session.tableNumber);
+    });
+    document.getElementById('btnChange').addEventListener('click', function(){ go(changeScreen); });
+    document.getElementById('btnHome').addEventListener('click', function(){ go('home'); });
+
+    if(tier.stars>=2 && !reducedMotion()) burstStars();
+  }
+
+  function burstStars(){
+    var layer = document.createElement('div');
+    layer.style.position='fixed'; layer.style.inset='0'; layer.style.pointerEvents='none'; layer.style.zIndex='50';
+    document.body.appendChild(layer);
+    for(var i=0;i<16;i++){
+      var s = document.createElement('span');
+      s.textContent = '⭐';
+      s.style.position='absolute';
+      s.style.left = (10+Math.random()*80)+'%';
+      s.style.top = '-40px';
+      s.style.fontSize = (16+Math.random()*16)+'px';
+      s.style.transition = 'transform 1.6s ease-in, opacity 1.6s ease-in';
+      s.style.opacity = '1';
+      layer.appendChild(s);
+      (function(el){
+        requestAnimationFrame(function(){
+          el.style.transform = 'translateY(' + (window.innerHeight+80) + 'px) rotate(' + (Math.random()*360) + 'deg)';
+          el.style.opacity='0';
+        });
+      })(s);
+    }
+    setTimeout(function(){ layer.remove(); }, 1800);
+  }
+
+  /* ================= ROUTER ================= */
+  function render(){
+    switch(state.screen){
+      case 'home': return renderHome();
+      case 'math-level': return renderMathLevel();
+      case 'math-op': return renderMathOp();
+      case 'math-mode': return renderMathMode();
+      case 'math-result': return renderMathResult();
+      case 'verb-category': return renderVerbCategory();
+      case 'verb-learn': return renderVerbLearn();
+      case 'verb-tense': return renderVerbTense();
+      case 'verb-result': return renderVerbResult();
+      case 'lecture-letter': return renderLectureLetter();
+      case 'lecture-mode': return renderLectureMode();
+      case 'lecture-result': return renderLectureResult();
+      case 'tables-select': return renderTablesSelect();
+      case 'tables-mode': return renderTablesMode();
+      case 'tables-learn': return renderTablesLearn();
+      case 'tables-result': return renderTablesResult();
+      default: return renderHome();
+    }
+  }
+
+  render();
+})();
+</script>
