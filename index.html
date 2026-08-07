@@ -418,6 +418,47 @@
     try{ window.localStorage.setItem('cda_stars', String(state.stars)); }catch(e){ /* storage unavailable, keep in-memory only */ }
   }
 
+  /* Code d'accès de la famille : changez ce mot pour définir votre propre code. */
+  var ACCESS_CODE = 'FORET2026';
+
+  function isUnlocked(){
+    try{ return window.localStorage.getItem('cda_unlocked')==='1'; }catch(e){ return false; }
+  }
+  function setUnlocked(){
+    try{ window.localStorage.setItem('cda_unlocked','1'); }catch(e){ /* pas grave, restera pour cette visite */ }
+  }
+
+  function renderLock(){
+    var body =
+      '<div class="card" style="--accent:var(--accent-math); text-align:center; max-width:420px; margin:64px auto;">' +
+        '<div style="font-size:44px; margin-bottom:6px;">🔒</div>' +
+        '<h2 style="font-size:22px; font-weight:800; margin-bottom:8px;">Carnet d’Aventures</h2>' +
+        '<p style="color:var(--chalk-dim); margin-bottom:18px;">Entre le code secret pour commencer.</p>' +
+        '<div class="answer-row" id="lockZone">' +
+          '<input class="answer-input" id="lockInput" type="text" autocomplete="off" placeholder="Code" style="width:180px;" />' +
+          '<button class="btn-validate" id="lockValidate">Valider</button>' +
+        '</div>' +
+        '<div id="lockFeedback"></div>' +
+      '</div>';
+    app.innerHTML = '<main class="stage"><div class="wrap">'+body+'</div></main>';
+    var input = document.getElementById('lockInput');
+    var btn = document.getElementById('lockValidate');
+    input.focus();
+    function submit(){
+      var val = (input.value||'').trim();
+      if(val.length>0 && val.toLowerCase()===ACCESS_CODE.toLowerCase()){
+        setUnlocked();
+        render();
+      } else {
+        document.getElementById('lockFeedback').innerHTML = '<div class="feedback bad" style="margin-top:14px;">Code incorrect, réessaie.</div>';
+        input.value = '';
+        input.focus();
+      }
+    }
+    btn.addEventListener('click', submit);
+    input.addEventListener('keydown', function(e){ if(e.key==='Enter') submit(); });
+  }
+
   var app = document.getElementById('app');
 
   function go(screen){ state.screen = screen; render(); window.scrollTo(0,0); }
@@ -1208,6 +1249,6 @@
     }
   }
 
-  render();
+  if(isUnlocked()){ render(); } else { renderLock(); }
 })();
 </script>
