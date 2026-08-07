@@ -13,6 +13,8 @@
     --accent-fr:#ff9d6c;
     --accent-lecture:#6ec6ff;
     --accent-tables:#c9a4ff;
+    --accent-geo:#5fd9a0;
+    --accent-histoire:#d1a054;
     --good:#7ed957;
     --good-ink:#0e2a12;
     --bad:#ff5252;
@@ -97,6 +99,8 @@
   .portal:nth-of-type(2){ transform:rotate(0.8deg); }
   .portal:nth-of-type(3){ transform:rotate(-0.5deg); }
   .portal:nth-of-type(4){ transform:rotate(0.6deg); }
+  .portal:nth-of-type(5){ transform:rotate(-0.8deg); }
+  .portal:nth-of-type(6){ transform:rotate(0.9deg); }
   .portal:hover, .portal:focus-visible{ transform:translateY(-5px) rotate(0deg); box-shadow:0 20px 40px rgba(6,16,12,0.5); }
   .portal .icon{ width:44px; height:44px; color:var(--accent); }
   .portal h2{ font-size:22px; font-weight:800; }
@@ -348,6 +352,61 @@
     completer:{label:'Complète le mot', desc:'Choisis la bonne lettre'}
   };
 
+  var FLEUVES = [
+    { fleuve:'la Seine', ville:'Paris' },
+    { fleuve:'la Loire', ville:'Orléans' },
+    { fleuve:'le Rhône', ville:'Lyon' },
+    { fleuve:'la Garonne', ville:'Bordeaux' },
+    { fleuve:'le Rhin', ville:'Strasbourg' }
+  ];
+  var CAPITALES = [
+    { pays:'la France', capitale:'Paris' },
+    { pays:'l’Espagne', capitale:'Madrid' },
+    { pays:'l’Italie', capitale:'Rome' },
+    { pays:'l’Allemagne', capitale:'Berlin' },
+    { pays:'le Portugal', capitale:'Lisbonne' },
+    { pays:'la Belgique', capitale:'Bruxelles' },
+    { pays:'la Suisse', capitale:'Berne' },
+    { pays:'le Royaume-Uni', capitale:'Londres' },
+    { pays:'les Pays-Bas', capitale:'Amsterdam' },
+    { pays:'la Grèce', capitale:'Athènes' }
+  ];
+  var GEO_CATEGORIES = {
+    fleuves:{ label:'Fleuves de France', icon:'🌊', data:FLEUVES },
+    capitales:{ label:'Capitales d’Europe', icon:'🏛️', data:CAPITALES }
+  };
+
+  var HISTOIRE_PERIODS = {
+    prehistoire:{ label:'Préhistoire', icon:'🦴', questions:[
+      { q:'Comment les hommes préhistoriques faisaient-ils du feu ?', answer:'En frottant des silex', choices:['En frottant des silex','Avec des allumettes','Avec de l’électricité','En soufflant très fort'] },
+      { q:'Où peut-on voir de célèbres peintures préhistoriques en France ?', answer:'Dans la grotte de Lascaux', choices:['Dans la grotte de Lascaux','Au musée du Louvre','Au château de Versailles','À la tour Eiffel'] },
+      { q:'Quel grand animal chassaient les hommes préhistoriques ?', answer:'Le mammouth', choices:['Le mammouth','Le dinosaure','Le dromadaire','Le panda'] },
+      { q:'Avec quelle matière les hommes préhistoriques fabriquaient-ils leurs outils ?', answer:'La pierre taillée', choices:['La pierre taillée','Le plastique','Le verre','L’acier'] },
+      { q:'Comment vivait la plupart des hommes préhistoriques ?', answer:'En petits groupes de chasseurs-cueilleurs', choices:['En petits groupes de chasseurs-cueilleurs','Dans de grandes villes','Seuls, sans famille','Sous l’eau'] }
+    ]},
+    gaule:{ label:'Gaule & Rome', icon:'🛡️', questions:[
+      { q:'Comment s’appelait la France il y a plus de 2000 ans ?', answer:'La Gaule', choices:['La Gaule','L’Italie','La Bretagne','La Germanie'] },
+      { q:'Quel chef gaulois s’est opposé aux Romains ?', answer:'Vercingétorix', choices:['Vercingétorix','Napoléon','Charlemagne','Clovis'] },
+      { q:'Quel général romain a conquis la Gaule ?', answer:'Jules César', choices:['Jules César','Louis XIV','Alexandre le Grand','Charlemagne'] },
+      { q:'Où Vercingétorix a-t-il été vaincu par les Romains ?', answer:'À Alésia', choices:['À Alésia','À Paris','À Rome','À Marseille'] },
+      { q:'Que construisaient les Romains pour transporter l’eau jusqu’aux villes ?', answer:'Des aqueducs', choices:['Des aqueducs','Des trains','Des tunnels de métro','Des barrages'] }
+    ]},
+    moyenage:{ label:'Moyen Âge', icon:'🏰', questions:[
+      { q:'Où vivaient les seigneurs et les chevaliers au Moyen Âge ?', answer:'Dans des châteaux forts', choices:['Dans des châteaux forts','Dans des immeubles','Dans des grottes','Sur des bateaux'] },
+      { q:'Que portaient les chevaliers pour se protéger pendant les combats ?', answer:'Une armure', choices:['Une armure','Un manteau de pluie','Un gilet de sauvetage','Un pull en laine'] },
+      { q:'Comment appelle-t-on les grandes églises construites au Moyen Âge, comme Notre-Dame de Paris ?', answer:'Une cathédrale', choices:['Une cathédrale','Une mairie','Une école','Une bibliothèque'] },
+      { q:'Quelle jeune fille a aidé à délivrer la ville d’Orléans pendant la guerre de Cent Ans ?', answer:'Jeanne d’Arc', choices:['Jeanne d’Arc','Marie-Antoinette','Marie Curie','Éléonore d’Aquitaine'] },
+      { q:'Quel roi, célèbre au Moyen Âge, a donné son nom à de nombreuses écoles ?', answer:'Charlemagne', choices:['Charlemagne','Louis XIV','Napoléon','Henri IV'] }
+    ]},
+    revolution:{ label:'Rois & Révolution', icon:'👑', questions:[
+      { q:'Quel roi de France, surnommé le Roi-Soleil, a fait construire le château de Versailles ?', answer:'Louis XIV', choices:['Louis XIV','Louis XVI','François Ier','Henri IV'] },
+      { q:'En quelle année le peuple de Paris a-t-il pris la Bastille ?', answer:'1789', choices:['1789','1515','1900','1682'] },
+      { q:'Qui est devenu empereur des Français après la Révolution ?', answer:'Napoléon Bonaparte', choices:['Napoléon Bonaparte','Louis XIV','Charlemagne','Jules César'] },
+      { q:'Quel grand événement a mis fin au pouvoir absolu du roi en 1789 ?', answer:'La Révolution française', choices:['La Révolution française','La Préhistoire','La conquête de la Gaule','Le Moyen Âge'] },
+      { q:'Quelle est la devise de la France, née pendant la Révolution ?', answer:'Liberté, Égalité, Fraternité', choices:['Liberté, Égalité, Fraternité','Dieu et mon droit','Un pour tous, tous pour un','Paix et prospérité'] }
+    ]}
+  };
+
   var ICONS = {
     star:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87L18.2 21 12 17.4 5.8 21 7 14.14l-5-4.87 7.1-1.01L12 2z"/></svg>',
     back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg>',
@@ -355,6 +414,8 @@
     francais:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
     lecture:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5c3 0 6 1 8 3v11c-2-2-5-3-8-3z"/><path d="M21 5c-3 0-6 1-8 3v11c2-2 5-3 8-3z"/></svg>',
     tables:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5l14 14M19 5L5 19"/></svg>',
+    geo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 2.5 3 15.5 0 18M12 3c-3 2.5-3 15.5 0 18"/></svg>',
+    histoire:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12M6 21h12M7 3c0 6 5 6.5 5 9s-5 3-5 9M17 3c0 6-5 6.5-5 9s5 3 5 9"/></svg>',
     speak:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>'
   };
 
@@ -405,6 +466,8 @@
     verb:{ category:null, tense:null },
     lecture:{ letter:null, mode:null },
     tables:{ number:null },
+    geo:{ category:null },
+    histoire:{ period:null },
     session:null
   };
 
@@ -488,12 +551,16 @@
         '<button class="portal" id="portalTables" style="--accent:var(--accent-tables)"><span class="icon">'+ICONS.tables+'</span><h2>Tables ×</h2><p>Apprends les tables de multiplication de 1 à 12 par cœur.</p></button>' +
         '<button class="portal" id="portalFr" style="--accent:var(--accent-fr)"><span class="icon">'+ICONS.francais+'</span><h2>Français — Verbes</h2><p>Être, avoir et les verbes des 1er, 2e et 3e groupes, au présent, passé et futur.</p></button>' +
         '<button class="portal" id="portalLecture" style="--accent:var(--accent-lecture)"><span class="icon">'+ICONS.lecture+'</span><h2>Lecture — Sons</h2><p>Distingue p, d, b, g, ch, cl, m, gn, sc et st dans les mots.</p></button>' +
+        '<button class="portal" id="portalGeo" style="--accent:var(--accent-geo)"><span class="icon">'+ICONS.geo+'</span><h2>Géographie</h2><p>Fleuves de France et capitales d’Europe.</p></button>' +
+        '<button class="portal" id="portalHistoire" style="--accent:var(--accent-histoire)"><span class="icon">'+ICONS.histoire+'</span><h2>Histoire</h2><p>Préhistoire, Gaule, Moyen Âge, Rois & Révolution.</p></button>' +
       '</div>';
     shell(body, null);
     document.getElementById('portalMath').addEventListener('click', function(){ go('math-level'); });
     document.getElementById('portalTables').addEventListener('click', function(){ go('tables-select'); });
     document.getElementById('portalFr').addEventListener('click', function(){ go('verb-category'); });
     document.getElementById('portalLecture').addEventListener('click', function(){ go('lecture-letter'); });
+    document.getElementById('portalGeo').addEventListener('click', function(){ go('geo-category'); });
+    document.getElementById('portalHistoire').addEventListener('click', function(){ go('histoire-period'); });
   }
 
   /* ================= MATH ================= */
@@ -1167,6 +1234,172 @@
 
   function renderTablesResult(){ renderGenericResult('tables-select', 'Rejouer', 'Changer de table'); }
 
+  /* ================= GÉOGRAPHIE ================= */
+  function buildFleuveQuestion(){
+    var entry = pick(FLEUVES);
+    var others = shuffle(FLEUVES.filter(function(f){ return f!==entry; })).slice(0,3);
+    if(Math.random()<0.5){
+      var choices = shuffle([entry.fleuve].concat(others.map(function(o){ return o.fleuve; })));
+      return { prompt:'Quel fleuve traverse '+entry.ville+' ?', answer:entry.fleuve, choices:choices };
+    }
+    var choices2 = shuffle([entry.ville].concat(others.map(function(o){ return o.ville; })));
+    return { prompt:capitalize(entry.fleuve)+' traverse quelle ville ?', answer:entry.ville, choices:choices2 };
+  }
+
+  function buildCapitaleQuestion(){
+    var entry = pick(CAPITALES);
+    var others = shuffle(CAPITALES.filter(function(c){ return c!==entry; })).slice(0,3);
+    if(Math.random()<0.5){
+      var choices = shuffle([entry.capitale].concat(others.map(function(o){ return o.capitale; })));
+      return { prompt:'Quelle est la capitale de '+entry.pays+' ?', answer:entry.capitale, choices:choices };
+    }
+    var choices2 = shuffle([entry.pays].concat(others.map(function(o){ return o.pays; })));
+    return { prompt:entry.capitale+' est la capitale de quel pays ?', answer:entry.pays, choices:choices2 };
+  }
+
+  function renderGeoCategory(){
+    var buttons = Object.keys(GEO_CATEGORIES).map(function(key){
+      var info = GEO_CATEGORIES[key];
+      return '<button class="pick-btn" data-geocat="'+key+'"><span class="big">'+info.icon+'</span>'+info.label+'</button>';
+    }).join('');
+    var body =
+      '<div class="section-title"><span class="icon" style="color:var(--accent-geo)">'+ICONS.geo+'</span><h2>Quel thème veux-tu explorer ?</h2></div>' +
+      '<div class="choice-grid">'+buttons+'</div>';
+    shell(body, function(){ go('home'); });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-geocat]'), function(btn){
+      btn.addEventListener('click', function(){ startGeoSession(btn.getAttribute('data-geocat')); });
+    });
+  }
+
+  function startGeoSession(category){
+    state.geo.category = category;
+    state.session = { section:'geo', total:8, index:0, correct:0, current:null, locked:false };
+    nextGeoQuestion();
+  }
+  function nextGeoQuestion(){
+    state.session.current = state.geo.category==='fleuves' ? buildFleuveQuestion() : buildCapitaleQuestion();
+    state.session.locked = false;
+    renderGeoPlay();
+  }
+
+  function renderGeoPlay(){
+    var s = state.session;
+    var q = s.current;
+    var body = '<div class="card" style="--accent:var(--accent-geo)">' +
+      progressBlock() +
+      '<p class="question-text" style="font-size:24px;">'+q.prompt+'</p>' +
+      '<div class="choice-answers" id="answerZone">' +
+        q.choices.map(function(c){ return '<button class="choice-btn" data-val="'+encodeURIComponent(c)+'">'+c+'</button>'; }).join('') +
+      '</div>' +
+      '<div id="feedbackZone"></div>' +
+    '</div>';
+    shell(body, function(){ go('geo-category'); });
+    Array.prototype.forEach.call(document.querySelectorAll('.choice-btn'), function(btn){
+      btn.addEventListener('click', function(){ evalGeoChoice(decodeURIComponent(btn.getAttribute('data-val')), btn); });
+    });
+  }
+
+  function evalGeoChoice(val, btn){
+    var s = state.session;
+    if(s.locked) return;
+    s.locked = true;
+    var correct = val === s.current.answer;
+    lockAnswerZone();
+    Array.prototype.forEach.call(document.querySelectorAll('.choice-btn'), function(b){
+      var v = decodeURIComponent(b.getAttribute('data-val'));
+      if(v===s.current.answer) b.classList.add('is-correct');
+      else if(b===btn) b.classList.add('is-wrong');
+      else b.classList.add('is-dim');
+    });
+    if(correct) s.correct++;
+    s.index++;
+    var msgGood = pick(['Bravo !','Super !','Génial !','Trop fort !','Bien joué !']);
+    document.getElementById('feedbackZone').innerHTML =
+      (correct ? '<div class="feedback good">'+msgGood+' ✨</div>' : '<div class="feedback bad">Presque !<small>La bonne réponse était « '+s.current.answer+' »</small></div>') +
+      '<div class="actions-row"><button class="btn-primary" id="nextBtn">'+(s.index>=s.total?'Voir mon score':'Suivant')+'</button></div>';
+    document.getElementById('nextBtn').addEventListener('click', function(){
+      if(s.index>=s.total){ go('geo-result'); } else { nextGeoQuestion(); }
+    });
+  }
+
+  function renderGeoResult(){ renderGenericResult('geo-category', 'Rejouer', 'Changer de thème'); }
+
+  /* ================= HISTOIRE ================= */
+  function buildHistoireQueue(period){
+    var qs = HISTOIRE_PERIODS[period].questions;
+    return shuffle(qs.map(function(q){
+      return { prompt:q.q, answer:q.answer, choices:shuffle(q.choices.slice()) };
+    }));
+  }
+
+  function renderHistoirePeriod(){
+    var buttons = Object.keys(HISTOIRE_PERIODS).map(function(key){
+      var info = HISTOIRE_PERIODS[key];
+      return '<button class="pick-btn" data-period="'+key+'"><span class="big">'+info.icon+'</span>'+info.label+'</button>';
+    }).join('');
+    var body =
+      '<div class="section-title"><span class="icon" style="color:var(--accent-histoire)">'+ICONS.histoire+'</span><h2>Quelle période veux-tu explorer ?</h2></div>' +
+      '<div class="choice-grid">'+buttons+'</div>';
+    shell(body, function(){ go('home'); });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-period]'), function(btn){
+      btn.addEventListener('click', function(){ startHistoireSession(btn.getAttribute('data-period')); });
+    });
+  }
+
+  function startHistoireSession(period){
+    state.histoire.period = period;
+    var queue = buildHistoireQueue(period);
+    state.session = { section:'histoire', total:queue.length, index:0, correct:0, current:null, locked:false, queue:queue };
+    nextHistoireQuestion();
+  }
+  function nextHistoireQuestion(){
+    state.session.current = state.session.queue[state.session.index];
+    state.session.locked = false;
+    renderHistoirePlay();
+  }
+
+  function renderHistoirePlay(){
+    var s = state.session;
+    var q = s.current;
+    var body = '<div class="card" style="--accent:var(--accent-histoire)">' +
+      progressBlock() +
+      '<p class="question-text" style="font-size:22px;">'+q.prompt+'</p>' +
+      '<div class="choice-answers" id="answerZone">' +
+        q.choices.map(function(c){ return '<button class="choice-btn" data-val="'+encodeURIComponent(c)+'">'+c+'</button>'; }).join('') +
+      '</div>' +
+      '<div id="feedbackZone"></div>' +
+    '</div>';
+    shell(body, function(){ go('histoire-period'); });
+    Array.prototype.forEach.call(document.querySelectorAll('.choice-btn'), function(btn){
+      btn.addEventListener('click', function(){ evalHistoireChoice(decodeURIComponent(btn.getAttribute('data-val')), btn); });
+    });
+  }
+
+  function evalHistoireChoice(val, btn){
+    var s = state.session;
+    if(s.locked) return;
+    s.locked = true;
+    var correct = val === s.current.answer;
+    lockAnswerZone();
+    Array.prototype.forEach.call(document.querySelectorAll('.choice-btn'), function(b){
+      var v = decodeURIComponent(b.getAttribute('data-val'));
+      if(v===s.current.answer) b.classList.add('is-correct');
+      else if(b===btn) b.classList.add('is-wrong');
+      else b.classList.add('is-dim');
+    });
+    if(correct) s.correct++;
+    s.index++;
+    var msgGood = pick(['Bravo !','Super !','Génial !','Trop fort !','Bien joué !']);
+    document.getElementById('feedbackZone').innerHTML =
+      (correct ? '<div class="feedback good">'+msgGood+' ✨</div>' : '<div class="feedback bad">Presque !<small>La bonne réponse était « '+s.current.answer+' »</small></div>') +
+      '<div class="actions-row"><button class="btn-primary" id="nextBtn">'+(s.index>=s.total?'Voir mon score':'Suivant')+'</button></div>';
+    document.getElementById('nextBtn').addEventListener('click', function(){
+      if(s.index>=s.total){ go('histoire-result'); } else { nextHistoireQuestion(); }
+    });
+  }
+
+  function renderHistoireResult(){ renderGenericResult('histoire-period', 'Rejouer', 'Changer de période'); }
+
   /* ================= RESULT (shared) ================= */
   function renderGenericResult(changeScreen, replayLabel, changeLabel){
     var s = state.session;
@@ -1194,7 +1427,9 @@
       if(state.session.section==='math') startMathSession();
       else if(state.session.section==='verb') startVerbSession();
       else if(state.session.section==='lecture') startLectureSession();
-      else startTablesSession(state.session.tableNumber);
+      else if(state.session.section==='tables') startTablesSession(state.session.tableNumber);
+      else if(state.session.section==='geo') startGeoSession(state.geo.category);
+      else startHistoireSession(state.histoire.period);
     });
     document.getElementById('btnChange').addEventListener('click', function(){ go(changeScreen); });
     document.getElementById('btnHome').addEventListener('click', function(){ go('home'); });
@@ -1245,6 +1480,10 @@
       case 'tables-mode': return renderTablesMode();
       case 'tables-learn': return renderTablesLearn();
       case 'tables-result': return renderTablesResult();
+      case 'geo-category': return renderGeoCategory();
+      case 'geo-result': return renderGeoResult();
+      case 'histoire-period': return renderHistoirePeriod();
+      case 'histoire-result': return renderHistoireResult();
       default: return renderHome();
     }
   }
