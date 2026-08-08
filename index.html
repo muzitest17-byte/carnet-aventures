@@ -16,6 +16,8 @@
     --accent-geo:#5fd9a0;
     --accent-histoire:#d1a054;
     --accent-miroir:#ff7aa8;
+    --accent-vehicule:#8fa6ff;
+    --accent-droit:#b7c95a;
     --good:#7ed957;
     --good-ink:#0e2a12;
     --bad:#ff5252;
@@ -103,9 +105,23 @@
   .portal:nth-of-type(5){ transform:rotate(-0.8deg); }
   .portal:nth-of-type(6){ transform:rotate(0.9deg); }
   .portal:nth-of-type(7){ transform:rotate(-0.7deg); }
+  .portal:nth-of-type(8){ transform:rotate(0.5deg); }
+  .portal:nth-of-type(9){ transform:rotate(-0.9deg); }
 
   .mirror-letter{ font-size:min(34vw,150px); font-weight:800; text-align:center; line-height:1; margin:10px 0 26px; color:var(--accent); }
   .mirror-choice{ font-size:36px; font-weight:800; min-width:76px; }
+
+  .badge-btn{
+    display:flex; align-items:center; gap:7px; background:var(--panel); border:2px solid var(--line); border-radius:999px;
+    padding:8px 16px; font-weight:800; font-size:16px; box-shadow:var(--shadow); color:var(--chalk); cursor:pointer;
+  }
+  .badge-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:14px; width:100%; }
+  .badge-card{ background:var(--panel-2); border:2px solid var(--line); border-radius:var(--radius-md); padding:20px 14px; text-align:center; opacity:.4; filter:grayscale(1); }
+  .badge-card.earned{ opacity:1; filter:none; border-color:var(--accent-math); box-shadow:var(--shadow); }
+  .badge-icon{ font-size:38px; margin-bottom:8px; }
+  .badge-label{ font-weight:800; font-size:15px; margin-bottom:4px; }
+  .badge-desc{ font-size:12.5px; color:var(--chalk-dim); line-height:1.35; }
+  .badge-unlock{ margin-top:16px; padding:14px; border-radius:var(--radius-md); background:rgba(255,200,87,0.15); border:2px dashed var(--accent-math); text-align:center; font-weight:700; }
   .portal:hover, .portal:focus-visible{ transform:translateY(-5px) rotate(0deg); box-shadow:0 20px 40px rgba(6,16,12,0.5); }
   .portal .icon{ width:44px; height:44px; color:var(--accent); }
   .portal h2{ font-size:22px; font-weight:800; }
@@ -426,6 +442,57 @@
     ]}
   };
 
+  var VEHICULE_CATEGORIES = {
+    marques:{ label:'Marques', icon:'🏷️', questions:[
+      { q:'Quelle est une marque de voiture française ?', answer:'Renault', choices:['Renault','Toyota','Ford','BMW'] },
+      { q:'Quelle marque italienne est connue pour ses voitures de sport rouges ?', answer:'Ferrari', choices:['Ferrari','Peugeot','Volkswagen','Honda'] },
+      { q:'Quelle marque de moto japonaise est très connue ?', answer:'Yamaha', choices:['Yamaha','Renault','Airbus','Michelin'] },
+      { q:'Quelle marque fabrique des avions pour les grandes compagnies aériennes ?', answer:'Airbus', choices:['Airbus','Nike','Danone','Décathlon'] },
+      { q:'Quelle marque allemande est connue pour ses voitures ?', answer:'Volkswagen', choices:['Volkswagen','Renault','Fiat','Peugeot'] },
+      { q:'Quelle marque fabrique des pneus, pas des véhicules entiers ?', answer:'Michelin', choices:['Michelin','Toyota','Boeing','Yamaha'] }
+    ]},
+    moteurs:{ label:'Comment marche un moteur', icon:'⚙️', questions:[
+      { q:'Qu’utilise un moteur thermique pour fonctionner ?', answer:'De l’essence ou du diesel', choices:['De l’essence ou du diesel','De l’eau','Du vent','De la lumière'] },
+      { q:'Qu’utilise un moteur électrique pour fonctionner ?', answer:'Une batterie électrique', choices:['Une batterie électrique','Du charbon','De l’essence','Du bois'] },
+      { q:'Comment appelle-t-on l’endroit où l’on recharge une voiture électrique ?', answer:'Une borne de recharge', choices:['Une borne de recharge','Une station-service','Un garage à vélos','Une gare'] },
+      { q:'Quel est l’avantage d’un moteur électrique pour l’environnement ?', answer:'Il ne rejette pas de fumée polluante', choices:['Il ne rejette pas de fumée polluante','Il roule toujours plus vite','Il coûte moins cher à l’achat','Il fait plus de bruit'] },
+      { q:'Comment appelle-t-on un véhicule avec un moteur électrique et un moteur thermique ?', answer:'Un hybride', choices:['Un hybride','Un jumeau','Un double','Un mixte'] },
+      { q:'Que produit un moteur à essence, qui pollue l’air ?', answer:'Des gaz d’échappement', choices:['Des gaz d’échappement','De la neige','Des bulles de savon','De la vapeur d’eau parfumée'] }
+    ]},
+    types:{ label:'Types de véhicules', icon:'🚢', questions:[
+      { q:'Comment appelle-t-on un bateau à voiles ?', answer:'Un voilier', choices:['Un voilier','Un cargo','Un sous-marin','Un ferry'] },
+      { q:'Comment appelle-t-on un très grand bateau qui transporte des marchandises ?', answer:'Un cargo', choices:['Un cargo','Un voilier','Un canoë','Un kayak'] },
+      { q:'Comment appelle-t-on un avion sans moteur qui plane dans les airs ?', answer:'Un planeur', choices:['Un planeur','Un hélicoptère','Une fusée','Un dirigeable'] },
+      { q:'À quoi sert un camion-citerne ?', answer:'À transporter des liquides comme l’essence', choices:['À transporter des liquides comme l’essence','À transporter des passagers','À voler','À naviguer sous l’eau'] },
+      { q:'Comment appelle-t-on un véhicule qui vole grâce à des pales qui tournent au-dessus de lui ?', answer:'Un hélicoptère', choices:['Un hélicoptère','Un planeur','Un voilier','Un scooter'] },
+      { q:'Quel véhicule utilise-t-on pour naviguer sous l’eau ?', answer:'Un sous-marin', choices:['Un sous-marin','Un voilier','Un cargo','Un canoë'] }
+    ]}
+  };
+
+  var DROIT_CATEGORIES = {
+    enfant:{ label:'Droits de l’enfant', icon:'🧒', questions:[
+      { q:'Quel droit permet à tous les enfants d’aller à l’école ?', answer:'Le droit à l’éducation', choices:['Le droit à l’éducation','Le droit de conduire','Le droit de voter','Le droit de travailler'] },
+      { q:'Quelle convention protège les droits des enfants dans le monde entier ?', answer:'La Convention internationale des droits de l’enfant', choices:['La Convention internationale des droits de l’enfant','Le code de la route','La météo mondiale','Le règlement intérieur'] },
+      { q:'Tous les enfants ont le droit de...', answer:'Se reposer et jouer', choices:['Se reposer et jouer','Travailler toute la journée','Rester seuls sans personne pour s’occuper d’eux','Ne jamais aller à l’école'] },
+      { q:'Que signifie le droit à la santé pour un enfant ?', answer:'Être soigné quand il est malade', choices:['Être soigné quand il est malade','Manger seulement des bonbons','Ne jamais voir de médecin','Faire du sport obligatoirement'] },
+      { q:'Un enfant a le droit d’exprimer...', answer:'Son opinion et d’être écouté', choices:['Son opinion et d’être écouté','Uniquement ce que les adultes pensent','Rien du tout','Seulement en secret'] }
+    ]},
+    lois:{ label:'Règles et lois', icon:'⚖️', questions:[
+      { q:'À quoi servent les lois dans un pays ?', answer:'À protéger les gens et organiser la vie ensemble', choices:['À protéger les gens et organiser la vie ensemble','À embêter les enfants','À empêcher de s’amuser','À rien du tout'] },
+      { q:'Comment s’appelle l’ensemble des règles à respecter sur la route ?', answer:'Le code de la route', choices:['Le code de la route','Le règlement de l’école','La recette de cuisine','Le mode d’emploi'] },
+      { q:'Qui écrit et vote les lois en France ?', answer:'Les députés et les sénateurs', choices:['Les députés et les sénateurs','Les enfants','Les animaux','Personne'] },
+      { q:'Pourquoi une classe a-t-elle un règlement ?', answer:'Pour que tout le monde puisse bien apprendre ensemble', choices:['Pour que tout le monde puisse bien apprendre ensemble','Pour punir les élèves','Pour qu’il n’y ait pas de récréation','Pour empêcher de parler'] },
+      { q:'Que risque-t-on si on ne respecte pas une loi ?', answer:'Une sanction', choices:['Une sanction','Un cadeau','Des vacances','Rien du tout'] }
+    ]},
+    ensemble:{ label:'La vie ensemble', icon:'🤝', questions:[
+      { q:'Comment s’appelle la personne élue à la tête d’une ville ?', answer:'Le maire', choices:['Le maire','Le président','Le roi','Le juge'] },
+      { q:'Comment s’appelle la personne élue à la tête de la France ?', answer:'Le président de la République', choices:['Le président de la République','Le maire','Le roi','Le premier ministre'] },
+      { q:'Que veut dire l’égalité entre les filles et les garçons ?', answer:'Ils ont les mêmes droits et les mêmes chances', choices:['Ils ont les mêmes droits et les mêmes chances','Les garçons ont plus de droits','Les filles doivent rester à la maison','Ça n’existe pas'] },
+      { q:'Comment un adulte participe-t-il à la vie démocratique ?', answer:'En votant aux élections', choices:['En votant aux élections','En ne faisant rien','En désobéissant à toutes les règles','En restant seul chez soi'] },
+      { q:'Quelle est la devise de la France ?', answer:'Liberté, Égalité, Fraternité', choices:['Liberté, Égalité, Fraternité','Travail, Famille, Patrie','Paix et Amour','Force et Honneur'] }
+    ]}
+  };
+
   var ICONS = {
     star:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87L18.2 21 12 17.4 5.8 21 7 14.14l-5-4.87 7.1-1.01L12 2z"/></svg>',
     back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg>',
@@ -436,6 +503,8 @@
     geo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 2.5 3 15.5 0 18M12 3c-3 2.5-3 15.5 0 18"/></svg>',
     histoire:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12M6 21h12M7 3c0 6 5 6.5 5 9s-5 3-5 9M17 3c0 6-5 6.5-5 9s5 3 5 9"/></svg>',
     miroir:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="22" stroke-dasharray="2.5 3"/><path d="M8 8L5 12l3 4M16 8l3 4-3 4"/></svg>',
+    vehicule:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15l1.5-5A2 2 0 0 1 6.4 8.5h11.2a2 2 0 0 1 1.9 1.5L21 15"/><path d="M3 15h18v3a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-1H6v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><circle cx="7.5" cy="15" r="1.4"/><circle cx="16.5" cy="15" r="1.4"/></svg>',
+    droit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M8 21h8M5 7h6M18 7h-6M5 7L2.5 12a2.5 2.5 0 0 0 5 0zM18 7l-2.5 5a2.5 2.5 0 0 0 5 0z"/></svg>',
     speak:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>'
   };
 
@@ -482,12 +551,15 @@
   var state = {
     screen:'home',
     stars: loadStars(),
+    progress: loadProgress(),
     math:{ level:null, op:null, mode:null },
     verb:{ category:null, tense:null, mode:null },
     lecture:{ letter:null, mode:null },
     tables:{ number:null },
     geo:{ category:null },
     histoire:{ period:null },
+    vehicule:{ category:null },
+    droit:{ category:null },
     session:null
   };
 
@@ -499,6 +571,66 @@
   }
   function saveStars(){
     try{ window.localStorage.setItem('cda_stars', String(state.stars)); }catch(e){ /* storage unavailable, keep in-memory only */ }
+  }
+
+  function defaultProgress(){
+    return {
+      sessionsCompleted:0, perfectScores:0,
+      mathLevels:{}, tablesLearned:{}, verbCategories:{}, lectureLetters:{}, geoCategories:{}, histoirePeriods:{},
+      vehiculeCategories:{}, droitCategories:{},
+      mirrorSessions:0
+    };
+  }
+  function loadProgress(){
+    try{
+      var raw = window.localStorage.getItem('cda_progress');
+      if(!raw) return defaultProgress();
+      var parsed = JSON.parse(raw);
+      var def = defaultProgress();
+      for(var k in def){ if(!(k in parsed)) parsed[k] = def[k]; }
+      return parsed;
+    }catch(e){ return defaultProgress(); }
+  }
+  function saveProgress(){
+    try{ window.localStorage.setItem('cda_progress', JSON.stringify(state.progress)); }catch(e){ /* keep in-memory only */ }
+  }
+  function countKeys(obj){ return Object.keys(obj||{}).length; }
+
+  var BADGES = [
+    { id:'premier-pas', label:'Premier pas', icon:'👣', desc:'Termine ta première partie', check:function(p,stars){ return p.sessionsCompleted>=1; } },
+    { id:'sans-faute', label:'Sans faute', icon:'🌟', desc:'Obtiens un score parfait', check:function(p,stars){ return p.perfectScores>=1; } },
+    { id:'mathematicien', label:'Mathématicien', icon:'🔢', desc:'Joue dans chaque classe, du CP au CM2', check:function(p,stars){ return countKeys(p.mathLevels)>=5; } },
+    { id:'as-des-tables', label:'As des tables', icon:'✖️', desc:'Entraîne-toi sur les 12 tables', check:function(p,stars){ return countKeys(p.tablesLearned)>=12; } },
+    { id:'conjugueur', label:'Champion de conjugaison', icon:'📖', desc:'Joue avec être, avoir et les 3 groupes', check:function(p,stars){ return countKeys(p.verbCategories)>=5; } },
+    { id:'lecteur', label:'Lecteur confirmé', icon:'🔤', desc:'Entraîne-toi sur 10 sons différents', check:function(p,stars){ return countKeys(p.lectureLetters)>=10; } },
+    { id:'explorateur', label:'Explorateur du monde', icon:'🌍', desc:'Termine fleuves et capitales', check:function(p,stars){ return countKeys(p.geoCategories)>=2; } },
+    { id:'historien', label:'Historien en herbe', icon:'📜', desc:'Termine les 4 périodes d’Histoire', check:function(p,stars){ return countKeys(p.histoirePeriods)>=4; } },
+    { id:'oeil-de-lynx', label:'Œil de lynx', icon:'👁️', desc:'Termine 5 parties de Lettres miroir', check:function(p,stars){ return (p.mirrorSessions||0)>=5; } },
+    { id:'collectionneur', label:'Collectionneur', icon:'⭐', desc:'Récolte 20 étoiles', check:function(p,stars){ return stars>=20; } },
+    { id:'grand-collectionneur', label:'Grand collectionneur', icon:'🏆', desc:'Récolte 50 étoiles', check:function(p,stars){ return stars>=50; } },
+    { id:'mecano', label:'Petit mécano', icon:'🔧', desc:'Termine les 3 thèmes Véhicules', check:function(p,stars){ return countKeys(p.vehiculeCategories)>=3; } },
+    { id:'citoyen', label:'Petit citoyen', icon:'⚖️', desc:'Termine les 3 thèmes Droit & Loi', check:function(p,stars){ return countKeys(p.droitCategories)>=3; } }
+  ];
+
+  function getEarnedBadgeIds(){
+    return BADGES.filter(function(b){ return b.check(state.progress, state.stars); }).map(function(b){ return b.id; });
+  }
+
+  function recordProgress(){
+    var p = state.progress;
+    var s = state.session;
+    p.sessionsCompleted++;
+    if(s.total && s.correct===s.total) p.perfectScores++;
+    if(s.section==='math'){ p.mathLevels[state.math.level] = true; }
+    else if(s.section==='tables'){ if(state.tables.number!=='mix'){ p.tablesLearned[state.tables.number] = true; } }
+    else if(s.section==='verb'){ p.verbCategories[state.verb.category] = true; }
+    else if(s.section==='lecture'){ p.lectureLetters[state.lecture.letter] = true; }
+    else if(s.section==='geo'){ p.geoCategories[state.geo.category] = true; }
+    else if(s.section==='histoire'){ p.histoirePeriods[state.histoire.period] = true; }
+    else if(s.section==='vehicule'){ p.vehiculeCategories[state.vehicule.category] = true; }
+    else if(s.section==='droit'){ p.droitCategories[state.droit.category] = true; }
+    else if(s.section==='mirror'){ p.mirrorSessions = (p.mirrorSessions||0)+1; }
+    saveProgress();
   }
 
   /* Code d'accès de la famille : changez ce mot pour définir votre propre code. */
@@ -552,11 +684,13 @@
       '<div class="topbar">' +
         (backHandler ? '<button class="btn-back" id="btnBack">'+ICONS.back+'<span>Retour</span></button>' : '<span></span>') +
         '<span class="spacer"></span>' +
+        '<button class="badge-btn" id="btnBadges" type="button"><span>🏅</span><span>'+getEarnedBadgeIds().length+'/'+BADGES.length+'</span></button>' +
         '<span class="stars-counter">'+ICONS.star+'<span>'+state.stars+'</span></span>' +
       '</div>' +
       '<main class="stage"><div class="wrap">'+bodyHtml+'</div></main>' +
       '<footer class="credits">Carnet d’Aventures — CP à CM2</footer>';
     if(backHandler){ document.getElementById('btnBack').addEventListener('click', backHandler); }
+    document.getElementById('btnBadges').addEventListener('click', function(){ go('badges'); });
   }
 
   /* ================= HOME ================= */
@@ -574,6 +708,8 @@
         '<button class="portal" id="portalGeo" style="--accent:var(--accent-geo)"><span class="icon">'+ICONS.geo+'</span><h2>Géographie</h2><p>Fleuves de France et capitales d’Europe.</p></button>' +
         '<button class="portal" id="portalHistoire" style="--accent:var(--accent-histoire)"><span class="icon">'+ICONS.histoire+'</span><h2>Histoire</h2><p>Préhistoire, Gaule, Moyen Âge, Rois & Révolution.</p></button>' +
         '<button class="portal" id="portalMirror" style="--accent:var(--accent-miroir)"><span class="icon">'+ICONS.miroir+'</span><h2>Lettres miroir</h2><p>b, d, p, q, m, n — pour mieux les distinguer.</p></button>' +
+        '<button class="portal" id="portalVehicule" style="--accent:var(--accent-vehicule)"><span class="icon">'+ICONS.vehicule+'</span><h2>Véhicules</h2><p>Marques, moteurs (thermique/électrique) et types de véhicules.</p></button>' +
+        '<button class="portal" id="portalDroit" style="--accent:var(--accent-droit)"><span class="icon">'+ICONS.droit+'</span><h2>Droit & Loi</h2><p>Droits de l’enfant, règles, lois et vie ensemble.</p></button>' +
       '</div>';
     shell(body, null);
     document.getElementById('portalMath').addEventListener('click', function(){ go('math-level'); });
@@ -583,6 +719,8 @@
     document.getElementById('portalGeo').addEventListener('click', function(){ go('geo-category'); });
     document.getElementById('portalHistoire').addEventListener('click', function(){ go('histoire-period'); });
     document.getElementById('portalMirror').addEventListener('click', function(){ startMirrorSession(); });
+    document.getElementById('portalVehicule').addEventListener('click', function(){ go('vehicule-category'); });
+    document.getElementById('portalDroit').addEventListener('click', function(){ go('droit-category'); });
   }
 
   /* ================= MATH ================= */
@@ -1550,6 +1688,158 @@
 
   function renderMirrorResult(){ renderGenericResult('home', 'Rejouer', 'Terminer'); }
 
+  /* ================= VÉHICULES ================= */
+  function buildVehiculeQueue(category){
+    var qs = VEHICULE_CATEGORIES[category].questions;
+    return shuffle(qs.map(function(q){
+      return { prompt:q.q, answer:q.answer, choices:shuffle(q.choices.slice()) };
+    }));
+  }
+
+  function renderVehiculeCategory(){
+    var buttons = Object.keys(VEHICULE_CATEGORIES).map(function(key){
+      var info = VEHICULE_CATEGORIES[key];
+      return '<button class="pick-btn" data-vehcat="'+key+'"><span class="big">'+info.icon+'</span>'+info.label+'</button>';
+    }).join('');
+    var body =
+      '<div class="section-title"><span class="icon" style="color:var(--accent-vehicule)">'+ICONS.vehicule+'</span><h2>Quel thème veux-tu explorer ?</h2></div>' +
+      '<div class="choice-grid">'+buttons+'</div>';
+    shell(body, function(){ go('home'); });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-vehcat]'), function(btn){
+      btn.addEventListener('click', function(){ startVehiculeSession(btn.getAttribute('data-vehcat')); });
+    });
+  }
+
+  function startVehiculeSession(category){
+    state.vehicule.category = category;
+    var queue = buildVehiculeQueue(category);
+    state.session = { section:'vehicule', total:queue.length, index:0, correct:0, current:null, locked:false, queue:queue };
+    nextVehiculeQuestion();
+  }
+  function nextVehiculeQuestion(){
+    state.session.current = state.session.queue[state.session.index];
+    state.session.locked = false;
+    renderVehiculePlay();
+  }
+
+  function renderVehiculePlay(){
+    var s = state.session;
+    var q = s.current;
+    var body = '<div class="card" style="--accent:var(--accent-vehicule)">' +
+      progressBlock() +
+      '<p class="question-text" style="font-size:22px;">'+q.prompt+'</p>' +
+      '<div class="choice-answers" id="answerZone">' +
+        q.choices.map(function(c){ return '<button class="choice-btn" data-val="'+encodeURIComponent(c)+'">'+c+'</button>'; }).join('') +
+      '</div>' +
+      '<div id="feedbackZone"></div>' +
+    '</div>';
+    shell(body, function(){ go('vehicule-category'); });
+    Array.prototype.forEach.call(document.querySelectorAll('.choice-btn'), function(btn){
+      btn.addEventListener('click', function(){ evalVehiculeChoice(decodeURIComponent(btn.getAttribute('data-val')), btn); });
+    });
+  }
+
+  function evalVehiculeChoice(val, btn){
+    var s = state.session;
+    if(s.locked) return;
+    s.locked = true;
+    var correct = val === s.current.answer;
+    lockAnswerZone();
+    Array.prototype.forEach.call(document.querySelectorAll('.choice-btn'), function(b){
+      var v = decodeURIComponent(b.getAttribute('data-val'));
+      if(v===s.current.answer) b.classList.add('is-correct');
+      else if(b===btn) b.classList.add('is-wrong');
+      else b.classList.add('is-dim');
+    });
+    if(correct) s.correct++;
+    s.index++;
+    var msgGood = pick(['Bravo !','Super !','Génial !','Trop fort !','Bien joué !']);
+    document.getElementById('feedbackZone').innerHTML =
+      (correct ? '<div class="feedback good">'+msgGood+' ✨</div>' : '<div class="feedback bad">Presque !<small>La bonne réponse était « '+s.current.answer+' »</small></div>') +
+      '<div class="actions-row"><button class="btn-primary" id="nextBtn">'+(s.index>=s.total?'Voir mon score':'Suivant')+'</button></div>';
+    document.getElementById('nextBtn').addEventListener('click', function(){
+      if(s.index>=s.total){ go('vehicule-result'); } else { nextVehiculeQuestion(); }
+    });
+  }
+
+  function renderVehiculeResult(){ renderGenericResult('vehicule-category', 'Rejouer', 'Changer de thème'); }
+
+  /* ================= DROIT & LOI ================= */
+  function buildDroitQueue(category){
+    var qs = DROIT_CATEGORIES[category].questions;
+    return shuffle(qs.map(function(q){
+      return { prompt:q.q, answer:q.answer, choices:shuffle(q.choices.slice()) };
+    }));
+  }
+
+  function renderDroitCategory(){
+    var buttons = Object.keys(DROIT_CATEGORIES).map(function(key){
+      var info = DROIT_CATEGORIES[key];
+      return '<button class="pick-btn" data-droitcat="'+key+'"><span class="big">'+info.icon+'</span>'+info.label+'</button>';
+    }).join('');
+    var body =
+      '<div class="section-title"><span class="icon" style="color:var(--accent-droit)">'+ICONS.droit+'</span><h2>Quel thème veux-tu explorer ?</h2></div>' +
+      '<div class="choice-grid">'+buttons+'</div>';
+    shell(body, function(){ go('home'); });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-droitcat]'), function(btn){
+      btn.addEventListener('click', function(){ startDroitSession(btn.getAttribute('data-droitcat')); });
+    });
+  }
+
+  function startDroitSession(category){
+    state.droit.category = category;
+    var queue = buildDroitQueue(category);
+    state.session = { section:'droit', total:queue.length, index:0, correct:0, current:null, locked:false, queue:queue };
+    nextDroitQuestion();
+  }
+  function nextDroitQuestion(){
+    state.session.current = state.session.queue[state.session.index];
+    state.session.locked = false;
+    renderDroitPlay();
+  }
+
+  function renderDroitPlay(){
+    var s = state.session;
+    var q = s.current;
+    var body = '<div class="card" style="--accent:var(--accent-droit)">' +
+      progressBlock() +
+      '<p class="question-text" style="font-size:20px;">'+q.prompt+'</p>' +
+      '<div class="choice-answers" id="answerZone">' +
+        q.choices.map(function(c){ return '<button class="choice-btn" data-val="'+encodeURIComponent(c)+'">'+c+'</button>'; }).join('') +
+      '</div>' +
+      '<div id="feedbackZone"></div>' +
+    '</div>';
+    shell(body, function(){ go('droit-category'); });
+    Array.prototype.forEach.call(document.querySelectorAll('.choice-btn'), function(btn){
+      btn.addEventListener('click', function(){ evalDroitChoice(decodeURIComponent(btn.getAttribute('data-val')), btn); });
+    });
+  }
+
+  function evalDroitChoice(val, btn){
+    var s = state.session;
+    if(s.locked) return;
+    s.locked = true;
+    var correct = val === s.current.answer;
+    lockAnswerZone();
+    Array.prototype.forEach.call(document.querySelectorAll('.choice-btn'), function(b){
+      var v = decodeURIComponent(b.getAttribute('data-val'));
+      if(v===s.current.answer) b.classList.add('is-correct');
+      else if(b===btn) b.classList.add('is-wrong');
+      else b.classList.add('is-dim');
+    });
+    if(correct) s.correct++;
+    s.index++;
+    var msgGood = pick(['Bravo !','Super !','Génial !','Trop fort !','Bien joué !']);
+    document.getElementById('feedbackZone').innerHTML =
+      (correct ? '<div class="feedback good">'+msgGood+' ✨</div>' : '<div class="feedback bad">Presque !<small>La bonne réponse était « '+s.current.answer+' »</small></div>') +
+      '<div class="actions-row"><button class="btn-primary" id="nextBtn">'+(s.index>=s.total?'Voir mon score':'Suivant')+'</button></div>';
+    document.getElementById('nextBtn').addEventListener('click', function(){
+      if(s.index>=s.total){ go('droit-result'); } else { nextDroitQuestion(); }
+    });
+  }
+
+  function renderDroitResult(){ renderGenericResult('droit-category', 'Rejouer', 'Changer de thème'); }
+
   /* ================= RESULT (shared) ================= */
   function renderGenericResult(changeScreen, replayLabel, changeLabel){
     var s = state.session;
@@ -1559,13 +1849,21 @@
     else if(pct>=0.7){ tier={emoji:'🌟', msg:'Bravo, excellent travail !', stars:2}; }
     else if(pct>=0.4){ tier={emoji:'👍', msg:'Bien joué, continue !', stars:1}; }
     else { tier={emoji:'🌱', msg:'Continue à t’entraîner, tu vas y arriver !', stars:0}; }
+    var badgesBefore = getEarnedBadgeIds();
     state.stars += tier.stars;
     saveStars();
+    recordProgress();
+    var badgesAfter = getEarnedBadgeIds();
+    var newBadges = BADGES.filter(function(b){ return badgesAfter.indexOf(b.id)>=0 && badgesBefore.indexOf(b.id)<0; });
+    var badgeHtml = newBadges.length ? '<div class="badge-unlock">' + newBadges.map(function(b){
+      return '🎉 Badge débloqué : ' + b.icon + ' ' + b.label;
+    }).join('<br>') + '</div>' : '';
     var body = '<div class="card result-card">' +
       '<div class="result-emoji">'+tier.emoji+'</div>' +
       '<div class="result-score">'+s.correct+' / '+s.total+'</div>' +
       '<p class="result-msg">'+tier.msg+'</p>' +
       '<div class="result-stars">'+'⭐'.repeat(tier.stars)+(tier.stars===0?'☆☆☆':'') +'</div>' +
+      badgeHtml +
       '<div class="actions-row">' +
         '<button class="btn-primary" id="btnReplay">'+replayLabel+'</button>' +
         '<button class="btn-secondary" id="btnChange">'+changeLabel+'</button>' +
@@ -1580,6 +1878,8 @@
       else if(state.session.section==='tables') startTablesSession(state.session.tableNumber);
       else if(state.session.section==='geo') startGeoSession(state.geo.category);
       else if(state.session.section==='histoire') startHistoireSession(state.histoire.period);
+      else if(state.session.section==='vehicule') startVehiculeSession(state.vehicule.category);
+      else if(state.session.section==='droit') startDroitSession(state.droit.category);
       else startMirrorSession();
     });
     document.getElementById('btnChange').addEventListener('click', function(){ go(changeScreen); });
@@ -1613,9 +1913,26 @@
   }
 
   /* ================= ROUTER ================= */
+  function renderBadges(){
+    var earned = getEarnedBadgeIds();
+    var cards = BADGES.map(function(b){
+      var isEarned = earned.indexOf(b.id)>=0;
+      return '<div class="badge-card'+(isEarned?' earned':'')+'">' +
+        '<div class="badge-icon">'+b.icon+'</div>' +
+        '<div class="badge-label">'+b.label+'</div>' +
+        '<div class="badge-desc">'+b.desc+'</div>' +
+      '</div>';
+    }).join('');
+    var body =
+      '<div class="section-title"><span class="icon" style="font-size:26px;">🏅</span><h2>Mes badges ('+earned.length+' / '+BADGES.length+')</h2></div>' +
+      '<div class="badge-grid">'+cards+'</div>';
+    shell(body, function(){ go('home'); });
+  }
+
   function render(){
     switch(state.screen){
       case 'home': return renderHome();
+      case 'badges': return renderBadges();
       case 'math-level': return renderMathLevel();
       case 'math-op': return renderMathOp();
       case 'math-mode': return renderMathMode();
@@ -1637,6 +1954,10 @@
       case 'histoire-period': return renderHistoirePeriod();
       case 'histoire-result': return renderHistoireResult();
       case 'mirror-result': return renderMirrorResult();
+      case 'vehicule-category': return renderVehiculeCategory();
+      case 'vehicule-result': return renderVehiculeResult();
+      case 'droit-category': return renderDroitCategory();
+      case 'droit-result': return renderDroitResult();
       default: return renderHome();
     }
   }
