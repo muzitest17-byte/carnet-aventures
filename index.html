@@ -1689,10 +1689,19 @@
   function renderMirrorResult(){ renderGenericResult('home', 'Rejouer', 'Terminer'); }
 
   /* ================= VÉHICULES ================= */
+  var BRAND_FLAGS = {
+    Renault:'🇫🇷', Toyota:'🇯🇵', Ford:'🇺🇸', BMW:'🇩🇪', Ferrari:'🇮🇹', Peugeot:'🇫🇷',
+    Volkswagen:'🇩🇪', Honda:'🇯🇵', Yamaha:'🇯🇵', Airbus:'🇪🇺', Nike:'🇺🇸', Danone:'🇫🇷',
+    'Décathlon':'🇫🇷', Fiat:'🇮🇹', Michelin:'🇫🇷', Boeing:'🇺🇸'
+  };
+  function withFlag(name){ return BRAND_FLAGS[name] ? name+' '+BRAND_FLAGS[name] : name; }
+
   function buildVehiculeQueue(category){
     var qs = VEHICULE_CATEGORIES[category].questions;
     return shuffle(qs.map(function(q){
-      return { prompt:q.q, answer:q.answer, choices:shuffle(q.choices.slice()) };
+      var choices = q.choices.map(function(c){ return category==='marques' ? withFlag(c) : c; });
+      var answer = category==='marques' ? withFlag(q.answer) : q.answer;
+      return { prompt:q.q, answer:answer, choices:shuffle(choices) };
     }));
   }
 
