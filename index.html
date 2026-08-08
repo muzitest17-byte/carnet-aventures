@@ -15,6 +15,7 @@
     --accent-tables:#c9a4ff;
     --accent-geo:#5fd9a0;
     --accent-histoire:#d1a054;
+    --accent-miroir:#ff7aa8;
     --good:#7ed957;
     --good-ink:#0e2a12;
     --bad:#ff5252;
@@ -101,6 +102,10 @@
   .portal:nth-of-type(4){ transform:rotate(0.6deg); }
   .portal:nth-of-type(5){ transform:rotate(-0.8deg); }
   .portal:nth-of-type(6){ transform:rotate(0.9deg); }
+  .portal:nth-of-type(7){ transform:rotate(-0.7deg); }
+
+  .mirror-letter{ font-size:min(34vw,150px); font-weight:800; text-align:center; line-height:1; margin:10px 0 26px; color:var(--accent); }
+  .mirror-choice{ font-size:36px; font-weight:800; min-width:76px; }
   .portal:hover, .portal:focus-visible{ transform:translateY(-5px) rotate(0deg); box-shadow:0 20px 40px rgba(6,16,12,0.5); }
   .portal .icon{ width:44px; height:44px; color:var(--accent); }
   .portal h2{ font-size:22px; font-weight:800; }
@@ -332,9 +337,9 @@
     'melange':{label:'🎲 Mélange', pool:ALL_VERBS}
   };
 
-  var SOUND_LETTERS = ['p','d','b','g','ch','cl','m','gn','sc','st','ou','on','an','in','oi','eu','au'];
+  var SOUND_LETTERS = ['p','d','b','g','q','ch','cl','m','gn','sc','st','ou','on','an','in','oi','eu','au'];
   var GRAPHEME_MODE = {
-    p:'start', d:'start', b:'start', g:'start', ch:'start', cl:'start', m:'start', gn:'contains', sc:'start', st:'start',
+    p:'start', d:'start', b:'start', g:'start', q:'start', ch:'start', cl:'start', m:'start', gn:'contains', sc:'start', st:'start',
     ou:'contains', on:'contains', an:'contains', 'in':'contains', oi:'contains', eu:'contains', au:'contains'
   };
   var WORD_BANK = {
@@ -342,6 +347,7 @@
     d:['dent','domino','doigt','dauphin','dinosaure'],
     b:['ballon','bébé','banane','bateau','bulle'],
     g:['gâteau','guitare','gomme','girafe','gant'],
+    q:['quatre','question','quille','quiche','square'],
     ch:['chat','cheval','chaussette','chocolat','chien'],
     cl:['clé','classe','clown','clou','climat'],
     m:['maman','moto','maison','melon','mouton'],
@@ -361,6 +367,9 @@
     ecouter:{label:'Écoute et choisis', desc:'Retrouve le mot entendu'},
     completer:{label:'Complète le mot', desc:'Choisis la bonne lettre'}
   };
+
+  var MIRROR_LETTERS = ['b','d','p','q','m','n'];
+  var CONFUSION_FAMILY = { b:['d','p','q'], d:['b','p','q'], p:['b','d','q'], q:['b','d','p'], m:['n'], n:['m'] };
 
   var FLEUVES = [
     { fleuve:'la Seine', ville:'Paris' },
@@ -426,6 +435,7 @@
     tables:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5l14 14M19 5L5 19"/></svg>',
     geo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 2.5 3 15.5 0 18M12 3c-3 2.5-3 15.5 0 18"/></svg>',
     histoire:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12M6 21h12M7 3c0 6 5 6.5 5 9s-5 3-5 9M17 3c0 6-5 6.5-5 9s5 3 5 9"/></svg>',
+    miroir:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="22" stroke-dasharray="2.5 3"/><path d="M8 8L5 12l3 4M16 8l3 4-3 4"/></svg>',
     speak:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>'
   };
 
@@ -473,7 +483,7 @@
     screen:'home',
     stars: loadStars(),
     math:{ level:null, op:null, mode:null },
-    verb:{ category:null, tense:null },
+    verb:{ category:null, tense:null, mode:null },
     lecture:{ letter:null, mode:null },
     tables:{ number:null },
     geo:{ category:null },
@@ -563,6 +573,7 @@
         '<button class="portal" id="portalLecture" style="--accent:var(--accent-lecture)"><span class="icon">'+ICONS.lecture+'</span><h2>Lecture — Sons</h2><p>Sons simples (p, b, d...) et sons complexes (ch, gn, ou, on, oi...).</p></button>' +
         '<button class="portal" id="portalGeo" style="--accent:var(--accent-geo)"><span class="icon">'+ICONS.geo+'</span><h2>Géographie</h2><p>Fleuves de France et capitales d’Europe.</p></button>' +
         '<button class="portal" id="portalHistoire" style="--accent:var(--accent-histoire)"><span class="icon">'+ICONS.histoire+'</span><h2>Histoire</h2><p>Préhistoire, Gaule, Moyen Âge, Rois & Révolution.</p></button>' +
+        '<button class="portal" id="portalMirror" style="--accent:var(--accent-miroir)"><span class="icon">'+ICONS.miroir+'</span><h2>Lettres miroir</h2><p>b, d, p, q, m, n — pour mieux les distinguer.</p></button>' +
       '</div>';
     shell(body, null);
     document.getElementById('portalMath').addEventListener('click', function(){ go('math-level'); });
@@ -571,6 +582,7 @@
     document.getElementById('portalLecture').addEventListener('click', function(){ go('lecture-letter'); });
     document.getElementById('portalGeo').addEventListener('click', function(){ go('geo-category'); });
     document.getElementById('portalHistoire').addEventListener('click', function(){ go('histoire-period'); });
+    document.getElementById('portalMirror').addEventListener('click', function(){ startMirrorSession(); });
   }
 
   /* ================= MATH ================= */
@@ -854,17 +866,30 @@
     return SPEAK_PRONOUN[pronoun]+' '+form;
   }
 
-  function buildVerbQuestion(pool, tense){
+  function buildVerbQuestion(pool, tense, mode){
     var actualTense = tense==='melange' ? pick(['present','passe','futur','passeSimple']) : tense;
     var verb = pick(pool);
     var target = pick(PRONOUNS);
+    var form = conjugate(verb, actualTense, target);
+    if(mode==='trou'){
+      var subj = pick(PRONOUN_SUBJECTS[target]);
+      var prefix = target==='je'
+        ? (/^[aeiouhéèê]/i.test(form) ? 'J’' : 'Je ')
+        : capitalize(subj)+' ';
+      return {
+        kind:'input', verb:verb, tense:actualTense, pronoun:target,
+        sentence: prefix+'___',
+        hint: '('+verb+' — '+TENSE_INFO[actualTense].label+')',
+        answer: form
+      };
+    }
     var others = shuffle(PRONOUNS.filter(function(p){ return p!==target; })).slice(0,3);
-    var correctText = capitalize(subjectFor(target, conjugate(verb,actualTense,target)));
+    var correctText = capitalize(subjectFor(target, form));
     var choiceTexts = shuffle([correctText].concat(others.map(function(p){
       return capitalize(subjectFor(p, conjugate(verb,actualTense,p)));
     })));
     return {
-      verb:verb, tense:actualTense, pronoun:target,
+      kind:'choice', verb:verb, tense:actualTense, pronoun:target,
       prompt:'Conjugue <strong style="color:var(--accent-fr)">'+verb+'</strong> au <strong>'+TENSE_INFO[actualTense].label+'</strong> avec <strong>'+PRONOUN_DISPLAY[target]+'</strong>',
       answer:correctText, choices:choiceTexts
     };
@@ -939,7 +964,20 @@
       '<div class="choice-grid">'+buttons+'</div>';
     shell(body, function(){ go(backTarget); });
     Array.prototype.forEach.call(document.querySelectorAll('[data-tense]'), function(btn){
-      btn.addEventListener('click', function(){ state.verb.tense = btn.getAttribute('data-tense'); startVerbSession(); });
+      btn.addEventListener('click', function(){ state.verb.tense = btn.getAttribute('data-tense'); go('verb-mode'); });
+    });
+  }
+
+  function renderVerbMode(){
+    var body =
+      '<div class="section-title"><span class="icon" style="color:var(--accent-fr)">'+ICONS.francais+'</span><h2>Comment veux-tu t’entraîner ?</h2></div>' +
+      '<div class="choice-grid">' +
+        '<button class="pick-btn" data-vmode="qcm"><span class="big">☑️</span>QCM<small>Choisis la bonne réponse</small></button>' +
+        '<button class="pick-btn" data-vmode="trou"><span class="big">✏️</span>Texte à trou<small>Écris la bonne forme</small></button>' +
+      '</div>';
+    shell(body, function(){ go('verb-tense'); });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-vmode]'), function(btn){
+      btn.addEventListener('click', function(){ state.verb.mode = btn.getAttribute('data-vmode'); startVerbSession(); });
     });
   }
 
@@ -949,7 +987,7 @@
   }
   function nextVerbQuestion(){
     var pool = VERB_CATEGORIES[state.verb.category].pool;
-    state.session.current = buildVerbQuestion(pool, state.verb.tense);
+    state.session.current = buildVerbQuestion(pool, state.verb.tense, state.verb.mode);
     state.session.locked = false;
     renderVerbPlay();
   }
@@ -957,17 +995,54 @@
   function renderVerbPlay(){
     var s = state.session;
     var q = s.current;
-    var body = '<div class="card" style="--accent:var(--accent-fr)">' +
-      progressBlock() +
-      '<p class="question-meta">'+q.prompt+'</p>' +
-      '<div class="choice-answers" id="answerZone">' +
-        q.choices.map(function(c){ return '<button class="choice-btn verb-choice" data-val="'+encodeURIComponent(c)+'">'+c+'</button>'; }).join('') +
-      '</div>' +
-      '<div id="feedbackZone"></div>' +
-    '</div>';
-    shell(body, function(){ go('verb-tense'); });
-    Array.prototype.forEach.call(document.querySelectorAll('.choice-btn'), function(btn){
-      btn.addEventListener('click', function(){ evalVerbChoice(decodeURIComponent(btn.getAttribute('data-val')), btn); });
+    var body = '<div class="card" style="--accent:var(--accent-fr)">' + progressBlock();
+    if(q.kind==='input'){
+      body +=
+        '<p class="question-meta">'+q.hint+'</p>' +
+        '<p class="question-text">'+q.sentence+'</p>' +
+        '<div class="answer-row" id="answerZone">' +
+          '<input class="answer-input" id="verbInput" type="text" autocomplete="off" placeholder="?" style="width:220px;" />' +
+          '<button class="btn-validate" id="verbValidate">Valider</button>' +
+        '</div>';
+    } else {
+      body +=
+        '<p class="question-meta">'+q.prompt+'</p>' +
+        '<div class="choice-answers" id="answerZone">' +
+          q.choices.map(function(c){ return '<button class="choice-btn verb-choice" data-val="'+encodeURIComponent(c)+'">'+c+'</button>'; }).join('') +
+        '</div>';
+    }
+    body += '<div id="feedbackZone"></div></div>';
+    shell(body, function(){ go('verb-mode'); });
+    if(q.kind==='input'){
+      var input = document.getElementById('verbInput');
+      var vbtn = document.getElementById('verbValidate');
+      input.focus();
+      function submit(){ evalVerbInput(input.value); }
+      vbtn.addEventListener('click', submit);
+      input.addEventListener('keydown', function(e){ if(e.key==='Enter') submit(); });
+    } else {
+      Array.prototype.forEach.call(document.querySelectorAll('.choice-btn'), function(btn){
+        btn.addEventListener('click', function(){ evalVerbChoice(decodeURIComponent(btn.getAttribute('data-val')), btn); });
+      });
+    }
+  }
+
+  function evalVerbInput(raw){
+    var s = state.session;
+    if(s.locked) return;
+    var val = String(raw||'').trim();
+    if(val.length===0) return;
+    s.locked = true;
+    lockAnswerZone();
+    var correct = val.toLowerCase() === s.current.answer.toLowerCase();
+    if(correct) s.correct++;
+    s.index++;
+    var msgGood = pick(['Bravo !','Super !','Génial !','Trop fort !','Bien joué !']);
+    document.getElementById('feedbackZone').innerHTML =
+      (correct ? '<div class="feedback good">'+msgGood+' ✨</div>' : '<div class="feedback bad">Presque !<small>La bonne réponse était « '+s.current.answer+' »</small></div>') +
+      '<div class="actions-row"><button class="btn-primary" id="nextBtn">'+(s.index>=s.total?'Voir mon score':'Suivant')+'</button></div>';
+    document.getElementById('nextBtn').addEventListener('click', function(){
+      if(s.index>=s.total){ go('verb-result'); } else { nextVerbQuestion(); }
     });
   }
 
@@ -1410,6 +1485,71 @@
 
   function renderHistoireResult(){ renderGenericResult('histoire-period', 'Rejouer', 'Changer de période'); }
 
+  /* ================= LETTRES MIROIR (b/d/p/q, m/n) ================= */
+  function buildMirrorQuestion(){
+    var target = pick(MIRROR_LETTERS);
+    var family = shuffle(CONFUSION_FAMILY[target].slice());
+    while(family.length<3){
+      var pool = MIRROR_LETTERS.filter(function(l){ return l!==target && family.indexOf(l)===-1; });
+      family.push(pick(pool));
+    }
+    family = family.slice(0,3);
+    return { letter:target, choices:shuffle([target].concat(family)) };
+  }
+
+  function startMirrorSession(){
+    state.session = { section:'mirror', total:10, index:0, correct:0, current:null, locked:false };
+    nextMirrorQuestion();
+  }
+  function nextMirrorQuestion(){
+    state.session.current = buildMirrorQuestion();
+    state.session.locked = false;
+    renderMirrorPlay();
+  }
+
+  function renderMirrorPlay(){
+    var s = state.session;
+    var q = s.current;
+    var body = '<div class="card" style="--accent:var(--accent-miroir)">' +
+      progressBlock() +
+      '<p class="question-meta">Quelle est cette lettre ?</p>' +
+      '<div class="mirror-letter">'+q.letter+'</div>' +
+      '<div class="choice-answers" id="answerZone">' +
+        q.choices.map(function(c){ return '<button class="choice-btn mirror-choice" data-val="'+c+'">'+c+'</button>'; }).join('') +
+      '</div>' +
+      '<div id="feedbackZone"></div>' +
+    '</div>';
+    shell(body, function(){ go('home'); });
+    Array.prototype.forEach.call(document.querySelectorAll('.choice-btn'), function(btn){
+      btn.addEventListener('click', function(){ evalMirrorChoice(btn.getAttribute('data-val'), btn); });
+    });
+  }
+
+  function evalMirrorChoice(val, btn){
+    var s = state.session;
+    if(s.locked) return;
+    s.locked = true;
+    var correct = val === s.current.letter;
+    lockAnswerZone();
+    Array.prototype.forEach.call(document.querySelectorAll('.choice-btn'), function(b){
+      var v = b.getAttribute('data-val');
+      if(v===s.current.letter) b.classList.add('is-correct');
+      else if(b===btn) b.classList.add('is-wrong');
+      else b.classList.add('is-dim');
+    });
+    if(correct) s.correct++;
+    s.index++;
+    var msgGood = pick(['Bravo !','Super !','Génial !','Trop fort !','Bien joué !']);
+    document.getElementById('feedbackZone').innerHTML =
+      (correct ? '<div class="feedback good">'+msgGood+' ✨</div>' : '<div class="feedback bad">Presque !<small>La bonne réponse était « '+s.current.letter+' »</small></div>') +
+      '<div class="actions-row"><button class="btn-primary" id="nextBtn">'+(s.index>=s.total?'Voir mon score':'Suivant')+'</button></div>';
+    document.getElementById('nextBtn').addEventListener('click', function(){
+      if(s.index>=s.total){ go('mirror-result'); } else { nextMirrorQuestion(); }
+    });
+  }
+
+  function renderMirrorResult(){ renderGenericResult('home', 'Rejouer', 'Terminer'); }
+
   /* ================= RESULT (shared) ================= */
   function renderGenericResult(changeScreen, replayLabel, changeLabel){
     var s = state.session;
@@ -1439,7 +1579,8 @@
       else if(state.session.section==='lecture') startLectureSession();
       else if(state.session.section==='tables') startTablesSession(state.session.tableNumber);
       else if(state.session.section==='geo') startGeoSession(state.geo.category);
-      else startHistoireSession(state.histoire.period);
+      else if(state.session.section==='histoire') startHistoireSession(state.histoire.period);
+      else startMirrorSession();
     });
     document.getElementById('btnChange').addEventListener('click', function(){ go(changeScreen); });
     document.getElementById('btnHome').addEventListener('click', function(){ go('home'); });
@@ -1482,6 +1623,7 @@
       case 'verb-category': return renderVerbCategory();
       case 'verb-learn': return renderVerbLearn();
       case 'verb-tense': return renderVerbTense();
+      case 'verb-mode': return renderVerbMode();
       case 'verb-result': return renderVerbResult();
       case 'lecture-letter': return renderLectureLetter();
       case 'lecture-mode': return renderLectureMode();
@@ -1494,6 +1636,7 @@
       case 'geo-result': return renderGeoResult();
       case 'histoire-period': return renderHistoirePeriod();
       case 'histoire-result': return renderHistoireResult();
+      case 'mirror-result': return renderMirrorResult();
       default: return renderHome();
     }
   }
