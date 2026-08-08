@@ -332,8 +332,11 @@
     'melange':{label:'🎲 Mélange', pool:ALL_VERBS}
   };
 
-  var SOUND_LETTERS = ['p','d','b','g','ch','cl','m','gn','sc','st'];
-  var GRAPHEME_MODE = { p:'start', d:'start', b:'start', g:'start', ch:'start', cl:'start', m:'start', gn:'contains', sc:'start', st:'start' };
+  var SOUND_LETTERS = ['p','d','b','g','ch','cl','m','gn','sc','st','ou','on','an','in','oi','eu','au'];
+  var GRAPHEME_MODE = {
+    p:'start', d:'start', b:'start', g:'start', ch:'start', cl:'start', m:'start', gn:'contains', sc:'start', st:'start',
+    ou:'contains', on:'contains', an:'contains', 'in':'contains', oi:'contains', eu:'contains', au:'contains'
+  };
   var WORD_BANK = {
     p:['pomme','papa','pain','poisson','poule'],
     d:['dent','domino','doigt','dauphin','dinosaure'],
@@ -344,7 +347,14 @@
     m:['maman','moto','maison','melon','mouton'],
     gn:['montagne','araignée','campagne','agneau','cygne'],
     sc:['science','scie','sculpture','scooter','scarabée'],
-    st:['stylo','statue','studio','stade','steak']
+    st:['stylo','statue','studio','stade','steak'],
+    ou:['mou','chou','loup','genou','roue'],
+    on:['mouton','ballon','bonbon','dindon','poisson'],
+    an:['maman','gant','vacances','éléphant','manteau'],
+    'in':['lapin','main','pain','jardin','matin'],
+    oi:['voiture','roi','toit','poire','oiseau'],
+    eu:['feu','jeu','fleur','cheveux','docteur'],
+    au:['chapeau','jaune','saumon','taureau','auto']
   };
   var LECTURE_MODES = {
     reconnaitre:{label:'Reconnaître le son', desc:'Quel mot commence pareil ?'},
@@ -550,7 +560,7 @@
         '<button class="portal" id="portalMath" style="--accent:var(--accent-math)"><span class="icon">'+ICONS.math+'</span><h2>Maths</h2><p>Additions, soustractions et multiplications, du CP au CM2.</p></button>' +
         '<button class="portal" id="portalTables" style="--accent:var(--accent-tables)"><span class="icon">'+ICONS.tables+'</span><h2>Tables ×</h2><p>Apprends les tables de multiplication de 1 à 12 par cœur.</p></button>' +
         '<button class="portal" id="portalFr" style="--accent:var(--accent-fr)"><span class="icon">'+ICONS.francais+'</span><h2>Français — Verbes</h2><p>Être, avoir et les verbes des 1er, 2e et 3e groupes, au présent, passé et futur.</p></button>' +
-        '<button class="portal" id="portalLecture" style="--accent:var(--accent-lecture)"><span class="icon">'+ICONS.lecture+'</span><h2>Lecture — Sons</h2><p>Distingue p, d, b, g, ch, cl, m, gn, sc et st dans les mots.</p></button>' +
+        '<button class="portal" id="portalLecture" style="--accent:var(--accent-lecture)"><span class="icon">'+ICONS.lecture+'</span><h2>Lecture — Sons</h2><p>Sons simples (p, b, d...) et sons complexes (ch, gn, ou, on, oi...).</p></button>' +
         '<button class="portal" id="portalGeo" style="--accent:var(--accent-geo)"><span class="icon">'+ICONS.geo+'</span><h2>Géographie</h2><p>Fleuves de France et capitales d’Europe.</p></button>' +
         '<button class="portal" id="portalHistoire" style="--accent:var(--accent-histoire)"><span class="icon">'+ICONS.histoire+'</span><h2>Histoire</h2><p>Préhistoire, Gaule, Moyen Âge, Rois & Révolution.</p></button>' +
       '</div>';
