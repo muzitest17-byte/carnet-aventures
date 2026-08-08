@@ -17,7 +17,7 @@
     --accent-histoire:#d1a054;
     --accent-miroir:#ff7aa8;
     --accent-vehicule:#8fa6ff;
-    --accent-droit:#b7c95a;
+    --accent-finance:#4fd1c5;
     --good:#7ed957;
     --good-ink:#0e2a12;
     --bad:#ff5252;
@@ -469,27 +469,27 @@
     ]}
   };
 
-  var DROIT_CATEGORIES = {
-    enfant:{ label:'Droits de l’enfant', icon:'🧒', questions:[
-      { q:'Quel droit permet à tous les enfants d’aller à l’école ?', answer:'Le droit à l’éducation', choices:['Le droit à l’éducation','Le droit de conduire','Le droit de voter','Le droit de travailler'] },
-      { q:'Quelle convention protège les droits des enfants dans le monde entier ?', answer:'La Convention internationale des droits de l’enfant', choices:['La Convention internationale des droits de l’enfant','Le code de la route','La météo mondiale','Le règlement intérieur'] },
-      { q:'Tous les enfants ont le droit de...', answer:'Se reposer et jouer', choices:['Se reposer et jouer','Travailler toute la journée','Rester seuls sans personne pour s’occuper d’eux','Ne jamais aller à l’école'] },
-      { q:'Que signifie le droit à la santé pour un enfant ?', answer:'Être soigné quand il est malade', choices:['Être soigné quand il est malade','Manger seulement des bonbons','Ne jamais voir de médecin','Faire du sport obligatoirement'] },
-      { q:'Un enfant a le droit d’exprimer...', answer:'Son opinion et d’être écouté', choices:['Son opinion et d’être écouté','Uniquement ce que les adultes pensent','Rien du tout','Seulement en secret'] }
+  var FINANCE_CATEGORIES = {
+    monnaie:{ label:'Pièces et billets', icon:'🪙', questions:[
+      { q:'Quelle est la monnaie utilisée en France ?', answer:'L’euro', choices:['L’euro','Le dollar','La livre','Le yen'] },
+      { q:'Combien de centimes y a-t-il dans 1 euro ?', answer:'100', choices:['100','10','1000','50'] },
+      { q:'Quelle est la plus petite pièce en euros ?', answer:'1 centime', choices:['1 centime','1 euro','2 euros','50 centimes'] },
+      { q:'Combien de pièces de 1 euro faut-il pour faire un billet de 10 euros ?', answer:'10', choices:['10','100','1','5'] },
+      { q:'Si tu as 2 pièces de 2 euros, combien as-tu au total ?', answer:'4 euros', choices:['4 euros','2 euros','6 euros','8 euros'] }
     ]},
-    lois:{ label:'Règles et lois', icon:'⚖️', questions:[
-      { q:'À quoi servent les lois dans un pays ?', answer:'À protéger les gens et organiser la vie ensemble', choices:['À protéger les gens et organiser la vie ensemble','À embêter les enfants','À empêcher de s’amuser','À rien du tout'] },
-      { q:'Comment s’appelle l’ensemble des règles à respecter sur la route ?', answer:'Le code de la route', choices:['Le code de la route','Le règlement de l’école','La recette de cuisine','Le mode d’emploi'] },
-      { q:'Qui écrit et vote les lois en France ?', answer:'Les députés et les sénateurs', choices:['Les députés et les sénateurs','Les enfants','Les animaux','Personne'] },
-      { q:'Pourquoi une classe a-t-elle un règlement ?', answer:'Pour que tout le monde puisse bien apprendre ensemble', choices:['Pour que tout le monde puisse bien apprendre ensemble','Pour punir les élèves','Pour qu’il n’y ait pas de récréation','Pour empêcher de parler'] },
-      { q:'Que risque-t-on si on ne respecte pas une loi ?', answer:'Une sanction', choices:['Une sanction','Un cadeau','Des vacances','Rien du tout'] }
+    epargne:{ label:'Épargner et dépenser', icon:'🐷', questions:[
+      { q:'Que veut dire « épargner » de l’argent ?', answer:'Le mettre de côté pour plus tard', choices:['Le mettre de côté pour plus tard','Le dépenser tout de suite','Le jeter','Le donner à un inconnu'] },
+      { q:'Où peut-on mettre de l’argent en sécurité pour l’épargner ?', answer:'Dans une tirelire ou à la banque', choices:['Dans une tirelire ou à la banque','Sous la pluie','Dans la poubelle','N’importe où dehors'] },
+      { q:'Qu’est-ce qu’un besoin, par rapport à une envie ?', answer:'Quelque chose dont on a vraiment besoin pour vivre', choices:['Quelque chose dont on a vraiment besoin pour vivre','Un jouet qu’on veut absolument','Un bonbon','Un jeu vidéo'] },
+      { q:'Avant d’acheter quelque chose de cher, que doit-on faire ?', answer:'Réfléchir et parfois économiser', choices:['Réfléchir et parfois économiser','L’acheter tout de suite sans réfléchir','Le voler','Ne jamais rien acheter'] },
+      { q:'Pourquoi est-il utile de faire un budget ?', answer:'Pour savoir combien on peut dépenser', choices:['Pour savoir combien on peut dépenser','Pour dépenser plus que ce qu’on a','Ça ne sert à rien','Pour cacher son argent'] }
     ]},
-    ensemble:{ label:'La vie ensemble', icon:'🤝', questions:[
-      { q:'Comment s’appelle la personne élue à la tête d’une ville ?', answer:'Le maire', choices:['Le maire','Le président','Le roi','Le juge'] },
-      { q:'Comment s’appelle la personne élue à la tête de la France ?', answer:'Le président de la République', choices:['Le président de la République','Le maire','Le roi','Le premier ministre'] },
-      { q:'Que veut dire l’égalité entre les filles et les garçons ?', answer:'Ils ont les mêmes droits et les mêmes chances', choices:['Ils ont les mêmes droits et les mêmes chances','Les garçons ont plus de droits','Les filles doivent rester à la maison','Ça n’existe pas'] },
-      { q:'Comment un adulte participe-t-il à la vie démocratique ?', answer:'En votant aux élections', choices:['En votant aux élections','En ne faisant rien','En désobéissant à toutes les règles','En restant seul chez soi'] },
-      { q:'Quelle est la devise de la France ?', answer:'Liberté, Égalité, Fraternité', choices:['Liberté, Égalité, Fraternité','Travail, Famille, Patrie','Paix et Amour','Force et Honneur'] }
+    origine:{ label:'D’où vient l’argent', icon:'💼', questions:[
+      { q:'Comment la plupart des adultes gagnent-ils de l’argent ?', answer:'En travaillant', choices:['En travaillant','En dormant','En regardant la télévision','Par magie'] },
+      { q:'Comment s’appelle l’argent qu’on reçoit chaque mois pour son travail ?', answer:'Un salaire', choices:['Un salaire','Un cadeau','Une amende','Un impôt'] },
+      { q:'Où peut-on garder son argent en sécurité, avec l’aide d’un adulte ?', answer:'Dans un compte en banque', choices:['Dans un compte en banque','Dans la rue','Chez un inconnu','Dans le jardin'] },
+      { q:'Quand on paie plus cher que le prix et qu’on reçoit de l’argent en retour, comment s’appelle cet argent ?', answer:'La monnaie', choices:['La monnaie','Le salaire','L’impôt','Le cadeau'] },
+      { q:'Pourquoi paie-t-on des impôts ?', answer:'Pour financer les écoles, hôpitaux et routes', choices:['Pour financer les écoles, hôpitaux et routes','Pour rien','Pour enrichir une seule personne','Ça n’existe pas'] }
     ]}
   };
 
@@ -504,7 +504,7 @@
     histoire:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12M6 21h12M7 3c0 6 5 6.5 5 9s-5 3-5 9M17 3c0 6-5 6.5-5 9s5 3 5 9"/></svg>',
     miroir:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="22" stroke-dasharray="2.5 3"/><path d="M8 8L5 12l3 4M16 8l3 4-3 4"/></svg>',
     vehicule:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15l1.5-5A2 2 0 0 1 6.4 8.5h11.2a2 2 0 0 1 1.9 1.5L21 15"/><path d="M3 15h18v3a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-1H6v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><circle cx="7.5" cy="15" r="1.4"/><circle cx="16.5" cy="15" r="1.4"/></svg>',
-    droit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M8 21h8M5 7h6M18 7h-6M5 7L2.5 12a2.5 2.5 0 0 0 5 0zM18 7l-2.5 5a2.5 2.5 0 0 0 5 0z"/></svg>',
+    finance:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="6"/><circle cx="15" cy="15" r="6"/></svg>',
     speak:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>'
   };
 
@@ -559,7 +559,7 @@
     geo:{ category:null },
     histoire:{ period:null },
     vehicule:{ category:null },
-    droit:{ category:null },
+    finance:{ category:null },
     session:null
   };
 
@@ -577,7 +577,7 @@
     return {
       sessionsCompleted:0, perfectScores:0,
       mathLevels:{}, tablesLearned:{}, verbCategories:{}, lectureLetters:{}, geoCategories:{}, histoirePeriods:{},
-      vehiculeCategories:{}, droitCategories:{},
+      vehiculeCategories:{}, financeCategories:{},
       mirrorSessions:0
     };
   }
@@ -609,7 +609,7 @@
     { id:'collectionneur', label:'Collectionneur', icon:'⭐', desc:'Récolte 20 étoiles', check:function(p,stars){ return stars>=20; } },
     { id:'grand-collectionneur', label:'Grand collectionneur', icon:'🏆', desc:'Récolte 50 étoiles', check:function(p,stars){ return stars>=50; } },
     { id:'mecano', label:'Petit mécano', icon:'🔧', desc:'Termine les 3 thèmes Véhicules', check:function(p,stars){ return countKeys(p.vehiculeCategories)>=3; } },
-    { id:'citoyen', label:'Petit citoyen', icon:'⚖️', desc:'Termine les 3 thèmes Droit & Loi', check:function(p,stars){ return countKeys(p.droitCategories)>=3; } }
+    { id:'financier', label:'Petit financier', icon:'🪙', desc:'Termine les 3 thèmes Finance', check:function(p,stars){ return countKeys(p.financeCategories)>=3; } }
   ];
 
   function getEarnedBadgeIds(){
@@ -628,7 +628,7 @@
     else if(s.section==='geo'){ p.geoCategories[state.geo.category] = true; }
     else if(s.section==='histoire'){ p.histoirePeriods[state.histoire.period] = true; }
     else if(s.section==='vehicule'){ p.vehiculeCategories[state.vehicule.category] = true; }
-    else if(s.section==='droit'){ p.droitCategories[state.droit.category] = true; }
+    else if(s.section==='finance'){ p.financeCategories[state.finance.category] = true; }
     else if(s.section==='mirror'){ p.mirrorSessions = (p.mirrorSessions||0)+1; }
     saveProgress();
   }
@@ -709,7 +709,7 @@
         '<button class="portal" id="portalHistoire" style="--accent:var(--accent-histoire)"><span class="icon">'+ICONS.histoire+'</span><h2>Histoire</h2><p>Préhistoire, Gaule, Moyen Âge, Rois & Révolution.</p></button>' +
         '<button class="portal" id="portalMirror" style="--accent:var(--accent-miroir)"><span class="icon">'+ICONS.miroir+'</span><h2>Lettres miroir</h2><p>b, d, p, q, m, n — pour mieux les distinguer.</p></button>' +
         '<button class="portal" id="portalVehicule" style="--accent:var(--accent-vehicule)"><span class="icon">'+ICONS.vehicule+'</span><h2>Véhicules</h2><p>Marques, moteurs (thermique/électrique) et types de véhicules.</p></button>' +
-        '<button class="portal" id="portalDroit" style="--accent:var(--accent-droit)"><span class="icon">'+ICONS.droit+'</span><h2>Droit & Loi</h2><p>Droits de l’enfant, règles, lois et vie ensemble.</p></button>' +
+        '<button class="portal" id="portalFinance" style="--accent:var(--accent-finance)"><span class="icon">'+ICONS.finance+'</span><h2>Finance</h2><p>Monnaie, épargne et d’où vient l’argent.</p></button>' +
       '</div>';
     shell(body, null);
     document.getElementById('portalMath').addEventListener('click', function(){ go('math-level'); });
@@ -720,7 +720,7 @@
     document.getElementById('portalHistoire').addEventListener('click', function(){ go('histoire-period'); });
     document.getElementById('portalMirror').addEventListener('click', function(){ startMirrorSession(); });
     document.getElementById('portalVehicule').addEventListener('click', function(){ go('vehicule-category'); });
-    document.getElementById('portalDroit').addEventListener('click', function(){ go('droit-category'); });
+    document.getElementById('portalFinance').addEventListener('click', function(){ go('finance-category'); });
   }
 
   /* ================= MATH ================= */
@@ -1764,44 +1764,44 @@
 
   function renderVehiculeResult(){ renderGenericResult('vehicule-category', 'Rejouer', 'Changer de thème'); }
 
-  /* ================= DROIT & LOI ================= */
-  function buildDroitQueue(category){
-    var qs = DROIT_CATEGORIES[category].questions;
+  /* ================= FINANCE ================= */
+  function buildFinanceQueue(category){
+    var qs = FINANCE_CATEGORIES[category].questions;
     return shuffle(qs.map(function(q){
       return { prompt:q.q, answer:q.answer, choices:shuffle(q.choices.slice()) };
     }));
   }
 
-  function renderDroitCategory(){
-    var buttons = Object.keys(DROIT_CATEGORIES).map(function(key){
-      var info = DROIT_CATEGORIES[key];
-      return '<button class="pick-btn" data-droitcat="'+key+'"><span class="big">'+info.icon+'</span>'+info.label+'</button>';
+  function renderFinanceCategory(){
+    var buttons = Object.keys(FINANCE_CATEGORIES).map(function(key){
+      var info = FINANCE_CATEGORIES[key];
+      return '<button class="pick-btn" data-fincat="'+key+'"><span class="big">'+info.icon+'</span>'+info.label+'</button>';
     }).join('');
     var body =
-      '<div class="section-title"><span class="icon" style="color:var(--accent-droit)">'+ICONS.droit+'</span><h2>Quel thème veux-tu explorer ?</h2></div>' +
+      '<div class="section-title"><span class="icon" style="color:var(--accent-finance)">'+ICONS.finance+'</span><h2>Quel thème veux-tu explorer ?</h2></div>' +
       '<div class="choice-grid">'+buttons+'</div>';
     shell(body, function(){ go('home'); });
-    Array.prototype.forEach.call(document.querySelectorAll('[data-droitcat]'), function(btn){
-      btn.addEventListener('click', function(){ startDroitSession(btn.getAttribute('data-droitcat')); });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-fincat]'), function(btn){
+      btn.addEventListener('click', function(){ startFinanceSession(btn.getAttribute('data-fincat')); });
     });
   }
 
-  function startDroitSession(category){
-    state.droit.category = category;
-    var queue = buildDroitQueue(category);
-    state.session = { section:'droit', total:queue.length, index:0, correct:0, current:null, locked:false, queue:queue };
-    nextDroitQuestion();
+  function startFinanceSession(category){
+    state.finance.category = category;
+    var queue = buildFinanceQueue(category);
+    state.session = { section:'finance', total:queue.length, index:0, correct:0, current:null, locked:false, queue:queue };
+    nextFinanceQuestion();
   }
-  function nextDroitQuestion(){
+  function nextFinanceQuestion(){
     state.session.current = state.session.queue[state.session.index];
     state.session.locked = false;
-    renderDroitPlay();
+    renderFinancePlay();
   }
 
-  function renderDroitPlay(){
+  function renderFinancePlay(){
     var s = state.session;
     var q = s.current;
-    var body = '<div class="card" style="--accent:var(--accent-droit)">' +
+    var body = '<div class="card" style="--accent:var(--accent-finance)">' +
       progressBlock() +
       '<p class="question-text" style="font-size:20px;">'+q.prompt+'</p>' +
       '<div class="choice-answers" id="answerZone">' +
@@ -1809,13 +1809,13 @@
       '</div>' +
       '<div id="feedbackZone"></div>' +
     '</div>';
-    shell(body, function(){ go('droit-category'); });
+    shell(body, function(){ go('finance-category'); });
     Array.prototype.forEach.call(document.querySelectorAll('.choice-btn'), function(btn){
-      btn.addEventListener('click', function(){ evalDroitChoice(decodeURIComponent(btn.getAttribute('data-val')), btn); });
+      btn.addEventListener('click', function(){ evalFinanceChoice(decodeURIComponent(btn.getAttribute('data-val')), btn); });
     });
   }
 
-  function evalDroitChoice(val, btn){
+  function evalFinanceChoice(val, btn){
     var s = state.session;
     if(s.locked) return;
     s.locked = true;
@@ -1834,11 +1834,11 @@
       (correct ? '<div class="feedback good">'+msgGood+' ✨</div>' : '<div class="feedback bad">Presque !<small>La bonne réponse était « '+s.current.answer+' »</small></div>') +
       '<div class="actions-row"><button class="btn-primary" id="nextBtn">'+(s.index>=s.total?'Voir mon score':'Suivant')+'</button></div>';
     document.getElementById('nextBtn').addEventListener('click', function(){
-      if(s.index>=s.total){ go('droit-result'); } else { nextDroitQuestion(); }
+      if(s.index>=s.total){ go('finance-result'); } else { nextFinanceQuestion(); }
     });
   }
 
-  function renderDroitResult(){ renderGenericResult('droit-category', 'Rejouer', 'Changer de thème'); }
+  function renderFinanceResult(){ renderGenericResult('finance-category', 'Rejouer', 'Changer de thème'); }
 
   /* ================= RESULT (shared) ================= */
   function renderGenericResult(changeScreen, replayLabel, changeLabel){
@@ -1879,7 +1879,7 @@
       else if(state.session.section==='geo') startGeoSession(state.geo.category);
       else if(state.session.section==='histoire') startHistoireSession(state.histoire.period);
       else if(state.session.section==='vehicule') startVehiculeSession(state.vehicule.category);
-      else if(state.session.section==='droit') startDroitSession(state.droit.category);
+      else if(state.session.section==='finance') startFinanceSession(state.finance.category);
       else startMirrorSession();
     });
     document.getElementById('btnChange').addEventListener('click', function(){ go(changeScreen); });
@@ -1956,8 +1956,8 @@
       case 'mirror-result': return renderMirrorResult();
       case 'vehicule-category': return renderVehiculeCategory();
       case 'vehicule-result': return renderVehiculeResult();
-      case 'droit-category': return renderDroitCategory();
-      case 'droit-result': return renderDroitResult();
+      case 'finance-category': return renderFinanceCategory();
+      case 'finance-result': return renderFinanceResult();
       default: return renderHome();
     }
   }
