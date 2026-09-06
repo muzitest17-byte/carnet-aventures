@@ -18,6 +18,9 @@
     --accent-miroir:#ff7aa8;
     --accent-vehicule:#8fa6ff;
     --accent-finance:#4fd1c5;
+    --accent-science:#b7c95a;
+    --accent-sf:#8b7cf0;
+    --accent-lois:#7a8fc7;
     --good:#7ed957;
     --good-ink:#0e2a12;
     --bad:#ff5252;
@@ -107,6 +110,9 @@
   .portal:nth-of-type(7){ transform:rotate(-0.7deg); }
   .portal:nth-of-type(8){ transform:rotate(0.5deg); }
   .portal:nth-of-type(9){ transform:rotate(-0.9deg); }
+  .portal:nth-of-type(10){ transform:rotate(0.7deg); }
+  .portal:nth-of-type(11){ transform:rotate(-0.5deg); }
+  .portal:nth-of-type(12){ transform:rotate(0.8deg); }
 
   .mirror-letter{ font-size:min(34vw,150px); font-weight:800; text-align:center; line-height:1; margin:10px 0 26px; color:var(--accent); }
   .mirror-choice{ font-size:36px; font-weight:800; min-width:76px; }
@@ -122,6 +128,9 @@
   .badge-label{ font-weight:800; font-size:15px; margin-bottom:4px; }
   .badge-desc{ font-size:12.5px; color:var(--chalk-dim); line-height:1.35; }
   .badge-unlock{ margin-top:16px; padding:14px; border-radius:var(--radius-md); background:rgba(255,200,87,0.15); border:2px dashed var(--accent-math); text-align:center; font-weight:700; }
+
+  .story-box{ background:var(--panel-2); border:2px dashed var(--line); border-radius:var(--radius-md); padding:16px 18px; font-size:15.5px; line-height:1.55; color:var(--chalk-dim); margin-bottom:18px; max-height:240px; overflow-y:auto; text-align:left; }
+  .story-title{ font-weight:800; color:var(--chalk); margin-bottom:8px; font-size:16px; }
   .portal:hover, .portal:focus-visible{ transform:translateY(-5px) rotate(0deg); box-shadow:0 20px 40px rgba(6,16,12,0.5); }
   .portal .icon{ width:44px; height:44px; color:var(--accent); }
   .portal h2{ font-size:22px; font-weight:800; }
@@ -493,6 +502,99 @@
     ]}
   };
 
+  var SCIENCE_CATEGORIES = {
+    corps:{ label:'Le corps humain', icon:'🫀', questions:[
+      { q:'Combien d’os y a-t-il environ dans le corps d’un adulte ?', answer:'Environ 206', choices:['Environ 206','Environ 10','Environ 1000','Environ 50'] },
+      { q:'Quel organe fait circuler le sang dans tout le corps ?', answer:'Le cœur', choices:['Le cœur','Le cerveau','L’estomac','Le foie'] },
+      { q:'Quel organe nous permet de respirer ?', answer:'Les poumons', choices:['Les poumons','Le cœur','L’estomac','La peau'] },
+      { q:'Combien de dents a un adulte, en général ?', answer:'32', choices:['32','10','50','20'] },
+      { q:'Quel est le plus grand organe du corps humain ?', answer:'La peau', choices:['La peau','Le cœur','Le cerveau','Le foie'] },
+      { q:'Quel organe nous permet de réfléchir et de contrôler notre corps ?', answer:'Le cerveau', choices:['Le cerveau','L’estomac','Les poumons','Les muscles'] }
+    ]},
+    animaux:{ label:'Les animaux', icon:'🦋', questions:[
+      { q:'Comment appelle-t-on les animaux qui allaitent leurs petits ?', answer:'Des mammifères', choices:['Des mammifères','Des reptiles','Des insectes','Des poissons'] },
+      { q:'Comment appelle-t-on un animal qui mange seulement des plantes ?', answer:'Un herbivore', choices:['Un herbivore','Un carnivore','Un omnivore','Un insectivore'] },
+      { q:'Comment appelle-t-on un animal qui mange de la viande ?', answer:'Un carnivore', choices:['Un carnivore','Un herbivore','Un végétarien','Un pollinisateur'] },
+      { q:'Quel animal peut voler et n’est pas un oiseau, mais un mammifère ?', answer:'La chauve-souris', choices:['La chauve-souris','Le pigeon','L’aigle','La libellule'] },
+      { q:'Comment appelle-t-on la transformation d’une chenille en papillon ?', answer:'La métamorphose', choices:['La métamorphose','L’hibernation','La migration','La mue'] },
+      { q:'Comment appelle-t-on les animaux qui pondent des œufs, comme les poules ?', answer:'Des ovipares', choices:['Des ovipares','Des mammifères','Des vivipares','Des amphibiens'] }
+    ]},
+    matiere:{ label:'La matière', icon:'💧', questions:[
+      { q:'Quels sont les trois états de la matière ?', answer:'Solide, liquide, gazeux', choices:['Solide, liquide, gazeux','Chaud, froid, tiède','Grand, petit, moyen','Rouge, vert, bleu'] },
+      { q:'Que devient l’eau quand elle gèle ?', answer:'De la glace (solide)', choices:['De la glace (solide)','De la vapeur','De l’huile','Du sable'] },
+      { q:'Que devient l’eau quand elle bout ?', answer:'De la vapeur (gaz)', choices:['De la vapeur (gaz)','De la glace','Du sel','Du sucre'] },
+      { q:'Comment appelle-t-on le passage de l’état solide à l’état liquide ?', answer:'La fusion', choices:['La fusion','L’évaporation','La solidification','La condensation'] },
+      { q:'À quelle température l’eau gèle-t-elle ?', answer:'0°C', choices:['0°C','100°C','50°C','-50°C'] }
+    ]},
+    energie:{ label:'L’énergie', icon:'⚡', questions:[
+      { q:'D’où vient l’énergie qui fait fonctionner les panneaux solaires ?', answer:'Du soleil', choices:['Du soleil','Du vent','De l’eau','Du charbon'] },
+      { q:'Quelle énergie utilise la force du vent ?', answer:'L’énergie éolienne', choices:['L’énergie éolienne','L’énergie solaire','L’énergie nucléaire','L’énergie hydraulique'] },
+      { q:'Quelle source d’énergie n’est pas renouvelable ?', answer:'Le pétrole', choices:['Le pétrole','Le soleil','Le vent','L’eau'] },
+      { q:'Pourquoi faut-il économiser l’énergie ?', answer:'Pour protéger la planète et ne pas gaspiller', choices:['Pour protéger la planète et ne pas gaspiller','Ça ne sert à rien','Pour payer plus cher','Pour faire plus de bruit'] },
+      { q:'Quel appareil transforme la lumière du soleil en électricité ?', answer:'Un panneau solaire', choices:['Un panneau solaire','Une éolienne','Une pile','Une bougie'] }
+    ]}
+  };
+
+  var SF_STORIES = {
+    robot:{
+      title:'Le robot qui avait peur du noir', icon:'🤖',
+      text:'Zibo était un petit robot qui vivait sur la planète Mars. Il aidait les astronautes à collecter des roches rouges. Mais chaque soir, quand le soleil se couchait, Zibo avait peur du noir. Un jour, une astronaute nommée Léa lui offrit une petite lampe qui brillait comme une étoile. Depuis ce jour, Zibo n’avait plus jamais peur, même dans le noir le plus total. Il rangeait sa lampe magique dans son bras métallique et l’allumait chaque soir pour explorer la planète rouge.',
+      questions:[
+        { q:'Sur quelle planète vivait Zibo ?', answer:'Mars', choices:['Mars','La Terre','La Lune','Jupiter'] },
+        { q:'Que collectait Zibo pour aider les astronautes ?', answer:'Des roches rouges', choices:['Des roches rouges','Des fleurs','De l’eau','Des étoiles'] },
+        { q:'De quoi Zibo avait-il peur ?', answer:'Du noir', choices:['Du noir','Des astronautes','Du soleil','De l’eau'] },
+        { q:'Qui a offert une lampe à Zibo ?', answer:'Léa', choices:['Léa','Zibo','Mars','Le soleil'] },
+        { q:'Où Zibo rangeait-il sa lampe ?', answer:'Dans son bras métallique', choices:['Dans son bras métallique','Dans une boîte','Sous son lit','Dans sa poche'] }
+      ]
+    },
+    voyage:{
+      title:'Le voyage vers la planète bleue', icon:'🚀',
+      text:'Capitaine Nova pilotait un vaisseau spatial appelé l’Étoile Filante. Son équipage cherchait une planète où des habitants pourraient vivre après avoir quitté la Terre. Après un long voyage de mille jours, ils découvrirent enfin une planète couverte d’océans bleus et de forêts vertes. Ils l’appelèrent Nova Terra, en l’honneur de leur capitaine. Toute l’équipe applaudit de joie : leur mission était enfin terminée !',
+      questions:[
+        { q:'Comment s’appelait le vaisseau spatial ?', answer:'L’Étoile Filante', choices:['L’Étoile Filante','Nova Terra','Le Soleil d’Or','La Comète Bleue'] },
+        { q:'Que cherchait l’équipage ?', answer:'Une planète où vivre', choices:['Une planète où vivre','De l’or','Des robots','Une nouvelle étoile'] },
+        { q:'Combien de temps a duré le voyage ?', answer:'Mille jours', choices:['Mille jours','Un jour','Cent ans','Une semaine'] },
+        { q:'De quoi était couverte la nouvelle planète ?', answer:'D’océans bleus et de forêts vertes', choices:['D’océans bleus et de forêts vertes','De sable et de rochers','De glace','De volcans'] },
+        { q:'Comment ont-ils appelé la nouvelle planète ?', answer:'Nova Terra', choices:['Nova Terra','La Terre','Mars','L’Étoile Filante'] }
+      ]
+    },
+    invention:{
+      title:'L’invention d’Élio', icon:'🐟',
+      text:'Élio était une jeune inventrice qui vivait dans une ville futuriste où les voitures volaient au-dessus des immeubles. Elle rêvait de construire une machine capable de nettoyer les océans pollués. Après des mois de travail dans son atelier, elle créa enfin le Poisson-Robot, une machine en forme de poisson qui avalait les déchets plastiques flottant dans l’eau. Grâce à son invention, les plages redevinrent propres et les vrais poissons purent nager en toute sécurité.',
+      questions:[
+        { q:'Quel était le métier d’Élio ?', answer:'Inventrice', choices:['Inventrice','Astronaute','Pilote','Cuisinière'] },
+        { q:'Que voulait construire Élio ?', answer:'Une machine pour nettoyer les océans', choices:['Une machine pour nettoyer les océans','Une voiture volante','Un robot cuisinier','Une fusée'] },
+        { q:'Comment s’appelait son invention ?', answer:'Le Poisson-Robot', choices:['Le Poisson-Robot','L’Étoile Filante','Nova Terra','Zibo'] },
+        { q:'Que faisait le Poisson-Robot ?', answer:'Il avalait les déchets plastiques', choices:['Il avalait les déchets plastiques','Il volait dans le ciel','Il fabriquait de l’électricité','Il chantait des chansons'] },
+        { q:'Que se passait-il dans la ville d’Élio ?', answer:'Les voitures volaient au-dessus des immeubles', choices:['Les voitures volaient au-dessus des immeubles','Il n’y avait pas de voitures','Tout le monde marchait à pied','Les voitures roulaient sous terre'] }
+      ]
+    }
+  };
+
+  var LOIS_CATEGORIES = {
+    pourquoi:{ label:'Pourquoi des règles ?', icon:'🤔', questions:[
+      { q:'À quoi servent les règles dans un groupe ?', answer:'À vivre ensemble en respectant chacun', choices:['À vivre ensemble en respectant chacun','À embêter les gens','À empêcher de s’amuser','À rien du tout'] },
+      { q:'Que se passerait-il s’il n’y avait aucune règle ?', answer:'Ce serait le désordre et l’insécurité', choices:['Ce serait le désordre et l’insécurité','Tout irait mieux','Rien ne changerait','Tout le monde serait plus heureux'] },
+      { q:'Pourquoi respecte-t-on les feux rouges et les passages piétons ?', answer:'Pour éviter les accidents', choices:['Pour éviter les accidents','Pour perdre du temps','Ça ne sert à rien','Pour faire plaisir aux voitures'] },
+      { q:'Une règle de vie en classe peut être...', answer:'Lever la main pour parler', choices:['Lever la main pour parler','Crier tout le temps','Ne jamais écouter','Sortir sans prévenir'] },
+      { q:'Qui doit respecter les règles dans une école ?', answer:'Tout le monde, élèves et adultes', choices:['Tout le monde, élèves et adultes','Seulement les élèves','Seulement les professeurs','Personne'] }
+    ]},
+    ecole:{ label:'Le règlement de l’école', icon:'🏫', questions:[
+      { q:'Comment s’appelle le document qui liste les règles d’une école ?', answer:'Le règlement intérieur', choices:['Le règlement intérieur','Le carnet de notes','Le cahier de vacances','La carte scolaire'] },
+      { q:'Pourquoi ne doit-on pas courir dans les couloirs de l’école ?', answer:'Pour éviter de se blesser ou de blesser quelqu’un', choices:['Pour éviter de se blesser ou de blesser quelqu’un','Parce que c’est interdit de bouger','Pour faire plaisir au directeur','Ça n’a pas d’importance'] },
+      { q:'Que doit-on faire si on n’est pas d’accord avec une règle de l’école ?', answer:'En parler calmement à un adulte', choices:['En parler calmement à un adulte','Désobéir sans rien dire','Se fâcher et crier','Ignorer complètement la règle'] },
+      { q:'Pourquoi y a-t-il des règles pour la récréation ?', answer:'Pour que tout le monde joue en sécurité', choices:['Pour que tout le monde joue en sécurité','Pour ne pas avoir de récréation','Pour embêter les élèves','Ça n’a aucune raison'] },
+      { q:'Qui peut modifier le règlement d’une école ?', answer:'La direction et les enseignants', choices:['La direction et les enseignants','Un seul élève','Personne, jamais','Les parents d’une autre école'] }
+    ]},
+    societe:{ label:'Les lois dans la société', icon:'⚖️', questions:[
+      { q:'Comment appelle-t-on l’ensemble des règles qu’un pays doit respecter ?', answer:'Les lois', choices:['Les lois','Les jeux','Les vacances','Les recettes'] },
+      { q:'Qui vote les lois en France ?', answer:'Les députés et les sénateurs', choices:['Les députés et les sénateurs','Les enfants','N’importe qui','Personne'] },
+      { q:'Que risque une personne qui ne respecte pas une loi ?', answer:'Une sanction, comme une amende', choices:['Une sanction, comme une amende','Un cadeau','Rien du tout','Des vacances'] },
+      { q:'Comment s’appelle l’ensemble des règles à respecter sur la route ?', answer:'Le code de la route', choices:['Le code de la route','Le règlement de l’école','La recette de cuisine','Le mode d’emploi'] },
+      { q:'Pourquoi les lois sont-elles importantes pour vivre ensemble ?', answer:'Elles protègent tout le monde et organisent la société', choices:['Elles protègent tout le monde et organisent la société','Elles ne servent à rien','Elles existent pour punir sans raison','Elles ne concernent que les adultes'] }
+    ]}
+  };
+
   var ICONS = {
     star:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87L18.2 21 12 17.4 5.8 21 7 14.14l-5-4.87 7.1-1.01L12 2z"/></svg>',
     back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg>',
@@ -505,6 +607,9 @@
     miroir:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="22" stroke-dasharray="2.5 3"/><path d="M8 8L5 12l3 4M16 8l3 4-3 4"/></svg>',
     vehicule:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15l1.5-5A2 2 0 0 1 6.4 8.5h11.2a2 2 0 0 1 1.9 1.5L21 15"/><path d="M3 15h18v3a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-1H6v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><circle cx="7.5" cy="15" r="1.4"/><circle cx="16.5" cy="15" r="1.4"/></svg>',
     finance:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="6"/><circle cx="15" cy="15" r="6"/></svg>',
+    science:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6L4 19a2 2 0 0 0 2 3h12a2 2 0 0 0 2-3L15 8V2M9 2h6M8 15h8"/></svg>',
+    sf:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c2 3 3 6 3 9a3 3 0 0 1-6 0c0-3 1-6 3-9z"/><path d="M9 15l-3 5 4-2M15 15l3 5-4-2"/></svg>',
+    lois:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M8 21h8M5 7h6M18 7h-6M5 7L2.5 12a2.5 2.5 0 0 0 5 0zM18 7l-2.5 5a2.5 2.5 0 0 0 5 0z"/></svg>',
     speak:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>'
   };
 
@@ -560,6 +665,9 @@
     histoire:{ period:null },
     vehicule:{ category:null },
     finance:{ category:null },
+    science:{ category:null },
+    sf:{ story:null },
+    lois:{ category:null },
     session:null
   };
 
@@ -577,7 +685,7 @@
     return {
       sessionsCompleted:0, perfectScores:0,
       mathLevels:{}, tablesLearned:{}, verbCategories:{}, lectureLetters:{}, geoCategories:{}, histoirePeriods:{},
-      vehiculeCategories:{}, financeCategories:{},
+      vehiculeCategories:{}, financeCategories:{}, scienceCategories:{}, sfStories:{}, loisCategories:{},
       mirrorSessions:0
     };
   }
@@ -609,7 +717,10 @@
     { id:'collectionneur', label:'Collectionneur', icon:'⭐', desc:'Récolte 20 étoiles', check:function(p,stars){ return stars>=20; } },
     { id:'grand-collectionneur', label:'Grand collectionneur', icon:'🏆', desc:'Récolte 50 étoiles', check:function(p,stars){ return stars>=50; } },
     { id:'mecano', label:'Petit mécano', icon:'🔧', desc:'Termine les 3 thèmes Véhicules', check:function(p,stars){ return countKeys(p.vehiculeCategories)>=3; } },
-    { id:'financier', label:'Petit financier', icon:'🪙', desc:'Termine les 3 thèmes Finance', check:function(p,stars){ return countKeys(p.financeCategories)>=3; } }
+    { id:'financier', label:'Petit financier', icon:'🪙', desc:'Termine les 3 thèmes Finance', check:function(p,stars){ return countKeys(p.financeCategories)>=3; } },
+    { id:'savant', label:'Petit savant', icon:'🔬', desc:'Termine les 4 thèmes Sciences', check:function(p,stars){ return countKeys(p.scienceCategories)>=4; } },
+    { id:'explorateur-sf', label:'Explorateur galactique', icon:'🚀', desc:'Lis les 3 histoires de science-fiction', check:function(p,stars){ return countKeys(p.sfStories)>=3; } },
+    { id:'legiste', label:'Petit légiste', icon:'⚖️', desc:'Termine les 3 thèmes Lois', check:function(p,stars){ return countKeys(p.loisCategories)>=3; } }
   ];
 
   function getEarnedBadgeIds(){
@@ -629,6 +740,9 @@
     else if(s.section==='histoire'){ p.histoirePeriods[state.histoire.period] = true; }
     else if(s.section==='vehicule'){ p.vehiculeCategories[state.vehicule.category] = true; }
     else if(s.section==='finance'){ p.financeCategories[state.finance.category] = true; }
+    else if(s.section==='science'){ p.scienceCategories[state.science.category] = true; }
+    else if(s.section==='sf'){ p.sfStories[state.sf.story] = true; }
+    else if(s.section==='lois'){ p.loisCategories[state.lois.category] = true; }
     else if(s.section==='mirror'){ p.mirrorSessions = (p.mirrorSessions||0)+1; }
     saveProgress();
   }
@@ -710,6 +824,9 @@
         '<button class="portal" id="portalMirror" style="--accent:var(--accent-miroir)"><span class="icon">'+ICONS.miroir+'</span><h2>Lettres miroir</h2><p>b, d, p, q, m, n — pour mieux les distinguer.</p></button>' +
         '<button class="portal" id="portalVehicule" style="--accent:var(--accent-vehicule)"><span class="icon">'+ICONS.vehicule+'</span><h2>Véhicules</h2><p>Marques, moteurs (thermique/électrique) et types de véhicules.</p></button>' +
         '<button class="portal" id="portalFinance" style="--accent:var(--accent-finance)"><span class="icon">'+ICONS.finance+'</span><h2>Finance</h2><p>Monnaie, épargne et d’où vient l’argent.</p></button>' +
+        '<button class="portal" id="portalScience" style="--accent:var(--accent-science)"><span class="icon">'+ICONS.science+'</span><h2>Sciences</h2><p>Corps humain, animaux, matière et énergie.</p></button>' +
+        '<button class="portal" id="portalSF" style="--accent:var(--accent-sf)"><span class="icon">'+ICONS.sf+'</span><h2>Science-Fiction</h2><p>Lis des histoires futuristes et réponds aux questions.</p></button>' +
+        '<button class="portal" id="portalLois" style="--accent:var(--accent-lois)"><span class="icon">'+ICONS.lois+'</span><h2>Lois</h2><p>Pourquoi des règles, le règlement de l’école, les lois.</p></button>' +
       '</div>';
     shell(body, null);
     document.getElementById('portalMath').addEventListener('click', function(){ go('math-level'); });
@@ -721,6 +838,9 @@
     document.getElementById('portalMirror').addEventListener('click', function(){ startMirrorSession(); });
     document.getElementById('portalVehicule').addEventListener('click', function(){ go('vehicule-category'); });
     document.getElementById('portalFinance').addEventListener('click', function(){ go('finance-category'); });
+    document.getElementById('portalScience').addEventListener('click', function(){ go('science-category'); });
+    document.getElementById('portalSF').addEventListener('click', function(){ go('sf-category'); });
+    document.getElementById('portalLois').addEventListener('click', function(){ go('lois-category'); });
   }
 
   /* ================= MATH ================= */
@@ -1849,6 +1969,243 @@
 
   function renderFinanceResult(){ renderGenericResult('finance-category', 'Rejouer', 'Changer de thème'); }
 
+  /* ================= SCIENCES ================= */
+  function buildScienceQueue(category){
+    var qs = SCIENCE_CATEGORIES[category].questions;
+    return shuffle(qs.map(function(q){
+      return { prompt:q.q, answer:q.answer, choices:shuffle(q.choices.slice()) };
+    }));
+  }
+
+  function renderScienceCategory(){
+    var buttons = Object.keys(SCIENCE_CATEGORIES).map(function(key){
+      var info = SCIENCE_CATEGORIES[key];
+      return '<button class="pick-btn" data-scicat="'+key+'"><span class="big">'+info.icon+'</span>'+info.label+'</button>';
+    }).join('');
+    var body =
+      '<div class="section-title"><span class="icon" style="color:var(--accent-science)">'+ICONS.science+'</span><h2>Quel thème veux-tu explorer ?</h2></div>' +
+      '<div class="choice-grid">'+buttons+'</div>';
+    shell(body, function(){ go('home'); });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-scicat]'), function(btn){
+      btn.addEventListener('click', function(){ startScienceSession(btn.getAttribute('data-scicat')); });
+    });
+  }
+
+  function startScienceSession(category){
+    state.science.category = category;
+    var queue = buildScienceQueue(category);
+    state.session = { section:'science', total:queue.length, index:0, correct:0, current:null, locked:false, queue:queue };
+    nextScienceQuestion();
+  }
+  function nextScienceQuestion(){
+    state.session.current = state.session.queue[state.session.index];
+    state.session.locked = false;
+    renderSciencePlay();
+  }
+
+  function renderSciencePlay(){
+    var s = state.session;
+    var q = s.current;
+    var body = '<div class="card" style="--accent:var(--accent-science)">' +
+      progressBlock() +
+      '<p class="question-text" style="font-size:20px;">'+q.prompt+'</p>' +
+      '<div class="choice-answers" id="answerZone">' +
+        q.choices.map(function(c){ return '<button class="choice-btn" data-val="'+encodeURIComponent(c)+'">'+c+'</button>'; }).join('') +
+      '</div>' +
+      '<div id="feedbackZone"></div>' +
+    '</div>';
+    shell(body, function(){ go('science-category'); });
+    Array.prototype.forEach.call(document.querySelectorAll('.choice-btn'), function(btn){
+      btn.addEventListener('click', function(){ evalScienceChoice(decodeURIComponent(btn.getAttribute('data-val')), btn); });
+    });
+  }
+
+  function evalScienceChoice(val, btn){
+    var s = state.session;
+    if(s.locked) return;
+    s.locked = true;
+    var correct = val === s.current.answer;
+    lockAnswerZone();
+    Array.prototype.forEach.call(document.querySelectorAll('.choice-btn'), function(b){
+      var v = decodeURIComponent(b.getAttribute('data-val'));
+      if(v===s.current.answer) b.classList.add('is-correct');
+      else if(b===btn) b.classList.add('is-wrong');
+      else b.classList.add('is-dim');
+    });
+    if(correct) s.correct++;
+    s.index++;
+    var msgGood = pick(['Bravo !','Super !','Génial !','Trop fort !','Bien joué !']);
+    document.getElementById('feedbackZone').innerHTML =
+      (correct ? '<div class="feedback good">'+msgGood+' ✨</div>' : '<div class="feedback bad">Presque !<small>La bonne réponse était « '+s.current.answer+' »</small></div>') +
+      '<div class="actions-row"><button class="btn-primary" id="nextBtn">'+(s.index>=s.total?'Voir mon score':'Suivant')+'</button></div>';
+    document.getElementById('nextBtn').addEventListener('click', function(){
+      if(s.index>=s.total){ go('science-result'); } else { nextScienceQuestion(); }
+    });
+  }
+
+  function renderScienceResult(){ renderGenericResult('science-category', 'Rejouer', 'Changer de thème'); }
+
+  /* ================= SCIENCE-FICTION (lecture) ================= */
+  function renderSFCategory(){
+    var buttons = Object.keys(SF_STORIES).map(function(key){
+      var info = SF_STORIES[key];
+      return '<button class="pick-btn" data-sfstory="'+key+'"><span class="big">'+info.icon+'</span>'+info.title+'</button>';
+    }).join('');
+    var body =
+      '<div class="section-title"><span class="icon" style="color:var(--accent-sf)">'+ICONS.sf+'</span><h2>Choisis une histoire</h2></div>' +
+      '<div class="choice-grid">'+buttons+'</div>';
+    shell(body, function(){ go('home'); });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-sfstory]'), function(btn){
+      btn.addEventListener('click', function(){ state.sf.story = btn.getAttribute('data-sfstory'); go('sf-read'); });
+    });
+  }
+
+  function renderSFRead(){
+    var story = SF_STORIES[state.sf.story];
+    var body =
+      '<div class="card" style="--accent:var(--accent-sf)">' +
+        '<div class="section-title"><span class="icon" style="color:var(--accent-sf)">'+ICONS.sf+'</span><h2>'+story.title+'</h2></div>' +
+        '<div class="story-box">'+story.text+'</div>' +
+        '<div class="actions-row"><button class="btn-primary" id="startSFQuiz">Je suis prêt·e pour les questions !</button></div>' +
+      '</div>';
+    shell(body, function(){ go('sf-category'); });
+    document.getElementById('startSFQuiz').addEventListener('click', function(){ startSFSession(); });
+  }
+
+  function startSFSession(){
+    var qs = SF_STORIES[state.sf.story].questions;
+    var queue = shuffle(qs.map(function(q){
+      return { prompt:q.q, answer:q.answer, choices:shuffle(q.choices.slice()) };
+    }));
+    state.session = { section:'sf', total:queue.length, index:0, correct:0, current:null, locked:false, queue:queue };
+    nextSFQuestion();
+  }
+  function nextSFQuestion(){
+    state.session.current = state.session.queue[state.session.index];
+    state.session.locked = false;
+    renderSFPlay();
+  }
+
+  function renderSFPlay(){
+    var s = state.session;
+    var q = s.current;
+    var story = SF_STORIES[state.sf.story];
+    var body = '<div class="card" style="--accent:var(--accent-sf)">' +
+      progressBlock() +
+      '<div class="story-box"><div class="story-title">'+story.title+'</div>'+story.text+'</div>' +
+      '<p class="question-text" style="font-size:20px;">'+q.prompt+'</p>' +
+      '<div class="choice-answers" id="answerZone">' +
+        q.choices.map(function(c){ return '<button class="choice-btn" data-val="'+encodeURIComponent(c)+'">'+c+'</button>'; }).join('') +
+      '</div>' +
+      '<div id="feedbackZone"></div>' +
+    '</div>';
+    shell(body, function(){ go('sf-read'); });
+    Array.prototype.forEach.call(document.querySelectorAll('.choice-btn'), function(btn){
+      btn.addEventListener('click', function(){ evalSFChoice(decodeURIComponent(btn.getAttribute('data-val')), btn); });
+    });
+  }
+
+  function evalSFChoice(val, btn){
+    var s = state.session;
+    if(s.locked) return;
+    s.locked = true;
+    var correct = val === s.current.answer;
+    lockAnswerZone();
+    Array.prototype.forEach.call(document.querySelectorAll('.choice-btn'), function(b){
+      var v = decodeURIComponent(b.getAttribute('data-val'));
+      if(v===s.current.answer) b.classList.add('is-correct');
+      else if(b===btn) b.classList.add('is-wrong');
+      else b.classList.add('is-dim');
+    });
+    if(correct) s.correct++;
+    s.index++;
+    var msgGood = pick(['Bravo !','Super !','Génial !','Trop fort !','Bien joué !']);
+    document.getElementById('feedbackZone').innerHTML =
+      (correct ? '<div class="feedback good">'+msgGood+' ✨</div>' : '<div class="feedback bad">Presque !<small>La bonne réponse était « '+s.current.answer+' »</small></div>') +
+      '<div class="actions-row"><button class="btn-primary" id="nextBtn">'+(s.index>=s.total?'Voir mon score':'Suivant')+'</button></div>';
+    document.getElementById('nextBtn').addEventListener('click', function(){
+      if(s.index>=s.total){ go('sf-result'); } else { nextSFQuestion(); }
+    });
+  }
+
+  function renderSFResult(){ renderGenericResult('sf-category', 'Rejouer', 'Changer d’histoire'); }
+
+  /* ================= LOIS ================= */
+  function buildLoisQueue(category){
+    var qs = LOIS_CATEGORIES[category].questions;
+    return shuffle(qs.map(function(q){
+      return { prompt:q.q, answer:q.answer, choices:shuffle(q.choices.slice()) };
+    }));
+  }
+
+  function renderLoisCategory(){
+    var buttons = Object.keys(LOIS_CATEGORIES).map(function(key){
+      var info = LOIS_CATEGORIES[key];
+      return '<button class="pick-btn" data-loiscat="'+key+'"><span class="big">'+info.icon+'</span>'+info.label+'</button>';
+    }).join('');
+    var body =
+      '<div class="section-title"><span class="icon" style="color:var(--accent-lois)">'+ICONS.lois+'</span><h2>Quel thème veux-tu explorer ?</h2></div>' +
+      '<div class="choice-grid">'+buttons+'</div>';
+    shell(body, function(){ go('home'); });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-loiscat]'), function(btn){
+      btn.addEventListener('click', function(){ startLoisSession(btn.getAttribute('data-loiscat')); });
+    });
+  }
+
+  function startLoisSession(category){
+    state.lois.category = category;
+    var queue = buildLoisQueue(category);
+    state.session = { section:'lois', total:queue.length, index:0, correct:0, current:null, locked:false, queue:queue };
+    nextLoisQuestion();
+  }
+  function nextLoisQuestion(){
+    state.session.current = state.session.queue[state.session.index];
+    state.session.locked = false;
+    renderLoisPlay();
+  }
+
+  function renderLoisPlay(){
+    var s = state.session;
+    var q = s.current;
+    var body = '<div class="card" style="--accent:var(--accent-lois)">' +
+      progressBlock() +
+      '<p class="question-text" style="font-size:19px;">'+q.prompt+'</p>' +
+      '<div class="choice-answers" id="answerZone">' +
+        q.choices.map(function(c){ return '<button class="choice-btn" data-val="'+encodeURIComponent(c)+'">'+c+'</button>'; }).join('') +
+      '</div>' +
+      '<div id="feedbackZone"></div>' +
+    '</div>';
+    shell(body, function(){ go('lois-category'); });
+    Array.prototype.forEach.call(document.querySelectorAll('.choice-btn'), function(btn){
+      btn.addEventListener('click', function(){ evalLoisChoice(decodeURIComponent(btn.getAttribute('data-val')), btn); });
+    });
+  }
+
+  function evalLoisChoice(val, btn){
+    var s = state.session;
+    if(s.locked) return;
+    s.locked = true;
+    var correct = val === s.current.answer;
+    lockAnswerZone();
+    Array.prototype.forEach.call(document.querySelectorAll('.choice-btn'), function(b){
+      var v = decodeURIComponent(b.getAttribute('data-val'));
+      if(v===s.current.answer) b.classList.add('is-correct');
+      else if(b===btn) b.classList.add('is-wrong');
+      else b.classList.add('is-dim');
+    });
+    if(correct) s.correct++;
+    s.index++;
+    var msgGood = pick(['Bravo !','Super !','Génial !','Trop fort !','Bien joué !']);
+    document.getElementById('feedbackZone').innerHTML =
+      (correct ? '<div class="feedback good">'+msgGood+' ✨</div>' : '<div class="feedback bad">Presque !<small>La bonne réponse était « '+s.current.answer+' »</small></div>') +
+      '<div class="actions-row"><button class="btn-primary" id="nextBtn">'+(s.index>=s.total?'Voir mon score':'Suivant')+'</button></div>';
+    document.getElementById('nextBtn').addEventListener('click', function(){
+      if(s.index>=s.total){ go('lois-result'); } else { nextLoisQuestion(); }
+    });
+  }
+
+  function renderLoisResult(){ renderGenericResult('lois-category', 'Rejouer', 'Changer de thème'); }
+
   /* ================= RESULT (shared) ================= */
   function renderGenericResult(changeScreen, replayLabel, changeLabel){
     var s = state.session;
@@ -1889,6 +2246,9 @@
       else if(state.session.section==='histoire') startHistoireSession(state.histoire.period);
       else if(state.session.section==='vehicule') startVehiculeSession(state.vehicule.category);
       else if(state.session.section==='finance') startFinanceSession(state.finance.category);
+      else if(state.session.section==='science') startScienceSession(state.science.category);
+      else if(state.session.section==='sf') startSFSession();
+      else if(state.session.section==='lois') startLoisSession(state.lois.category);
       else startMirrorSession();
     });
     document.getElementById('btnChange').addEventListener('click', function(){ go(changeScreen); });
@@ -1967,6 +2327,13 @@
       case 'vehicule-result': return renderVehiculeResult();
       case 'finance-category': return renderFinanceCategory();
       case 'finance-result': return renderFinanceResult();
+      case 'science-category': return renderScienceCategory();
+      case 'science-result': return renderScienceResult();
+      case 'sf-category': return renderSFCategory();
+      case 'sf-read': return renderSFRead();
+      case 'sf-result': return renderSFResult();
+      case 'lois-category': return renderLoisCategory();
+      case 'lois-result': return renderLoisResult();
       default: return renderHome();
     }
   }
